@@ -3,8 +3,6 @@ import * as dotenv from 'dotenv';
 
 dotenv.config();
 
-const extension = process.env.NODE_ENV === 'production' ? '.js' : 'ts';
-
 export const connectionSource = new DataSource({
   type: process.env.DATABASE_TYPE,
   host: process.env.DATABASE_HOST,
@@ -12,8 +10,8 @@ export const connectionSource = new DataSource({
   username: process.env.DATABASE_USERNAME,
   password: process.env.DATABASE_PASSWORD,
   database: process.env.DATABASE,
-  entities: [`src/models/**/*.${extension}`],
-  migrations: [`src/migrations/*.${extension}`],
+  entities: [__dirname + '/models/**/*{.ts,.js}'],
+  migrations: [__dirname + '/migrations/**/*{.ts,.js}'],
   synchronize: false,
   migrationsRun: true,
 } as DataSourceOptions);
