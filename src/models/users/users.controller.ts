@@ -6,6 +6,7 @@ import {
   Param,
   Put,
   Delete,
+  BadRequestException,
 } from '@nestjs/common';
 import { CreateDto } from './dtos/create.dto';
 import { UpdateDto } from './dtos/update.dto';
@@ -28,12 +29,20 @@ export class UsersController {
 
   @Post()
   async create(@Body() body: CreateDto) {
-    return await this.usersService.create(body as User);
+    try {
+      return await this.usersService.create(body as User);
+    } catch (error) {
+      throw new BadRequestException('Não foi possível criar o usuário!');
+    }
   }
 
   @Put('/:id')
   async update(@Param('id') id: number, @Body() body: UpdateDto) {
-    return await this.usersService.update(id, body as User);
+    try {
+      return await this.usersService.update(id, body as User);
+    } catch (error) {
+      throw new BadRequestException('Não foi possível atualizar o usuário!');
+    }
   }
 
   @Delete('/:id')
