@@ -8,6 +8,7 @@ import {
   Delete,
   BadRequestException,
 } from '@nestjs/common';
+import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { CreateDto } from './dtos/create.dto';
 import { UpdateDto } from './dtos/update.dto';
 import { User } from './entities/user.entity';
@@ -17,16 +18,23 @@ import { UsersService } from './users.service';
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
+  @ApiOperation({ summary: 'Find Users' })
+  @ApiResponse({ status: 200, description: 'Ok' })
   @Get()
-  async findAll() {
-    return await this.usersService.findAll({});
+  async find() {
+    return await this.usersService.find({});
   }
 
+  @ApiOperation({ summary: 'Find User' })
+  @ApiResponse({ status: 200, description: 'Ok' })
   @Get('/:id')
-  async find(@Param('id') id: number) {
+  async findOne(@Param('id') id: number) {
     return await this.usersService.findOne({ where: { id } });
   }
 
+  @ApiOperation({ summary: 'Create User' })
+  @ApiResponse({ status: 201, description: 'Created' })
+  @ApiResponse({ status: 400, description: 'Bad Request' })
   @Post()
   async create(@Body() body: CreateDto) {
     try {
@@ -36,6 +44,9 @@ export class UsersController {
     }
   }
 
+  @ApiOperation({ summary: 'Update User' })
+  @ApiResponse({ status: 200, description: 'Updated' })
+  @ApiResponse({ status: 400, description: 'Bad Request' })
   @Put('/:id')
   async update(@Param('id') id: number, @Body() body: UpdateDto) {
     try {
@@ -45,6 +56,8 @@ export class UsersController {
     }
   }
 
+  @ApiOperation({ summary: 'Delete User' })
+  @ApiResponse({ status: 200, description: 'Deleted' })
   @Delete('/:id')
   async delete(@Param('id') id: number) {
     return await this.usersService.delete(id);

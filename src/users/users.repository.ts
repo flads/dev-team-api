@@ -15,7 +15,7 @@ export class UsersRepository extends BaseRepository<User> {
     super(User, dataSource);
   }
 
-  async findAll(options: FindManyOptions): Promise<User[]> {
+  async find(options: FindManyOptions): Promise<User[]> {
     return await this.repository.find(options);
   }
 

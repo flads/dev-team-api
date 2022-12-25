@@ -7,8 +7,8 @@ import { UsersRepository } from './users.repository';
 export class UsersService {
   constructor(private usersRepository: UsersRepository) {}
 
-  async findAll(options) {
-    return await this.usersRepository.findAll(options);
+  async find(options) {
+    return await this.usersRepository.find(options);
   }
 
   async findOne(options): Promise<User | NotFoundException> {
