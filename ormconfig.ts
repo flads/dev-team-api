@@ -10,8 +10,8 @@ export const connectionSource = new DataSource({
   username: process.env.DATABASE_USERNAME,
   password: process.env.DATABASE_PASSWORD,
   database: process.env.DATABASE,
-  entities: [__dirname + '/models/**/*{.ts,.js}'],
-  migrations: [__dirname + '/migrations/**/*{.ts,.js}'],
+  entities: [__dirname + '/src/**/*.entity{.ts,.js}'],
+  migrations: [__dirname + '/src/database/migrations/**/*{.ts,.js}'],
   synchronize: false,
   migrationsRun: true,
 } as DataSourceOptions);
