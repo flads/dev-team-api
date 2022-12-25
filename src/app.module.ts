@@ -7,7 +7,7 @@ import { EnvironmentValidation } from './common/validations/environment.validati
 import { Module } from '@nestjs/common';
 import { TypeOrmConfigService } from './database/typeorm-config.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UsersModule } from './models/users/users.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
