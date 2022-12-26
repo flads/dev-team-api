@@ -1,5 +1,10 @@
 import { DeleteResult, UpdateResult } from 'typeorm';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { User } from './entities/user.entity';
 import { UsersRepository } from './users.repository';
 
@@ -7,8 +12,8 @@ import { UsersRepository } from './users.repository';
 export class UsersService {
   constructor(private usersRepository: UsersRepository) {}
 
-  async find(options) {
-    return await this.usersRepository.find(options);
+  async findAll(options) {
+    return await this.usersRepository.findAll(options);
   }
 
   async findOne(options): Promise<User | NotFoundException> {
@@ -22,29 +27,43 @@ export class UsersService {
   }
 
   async create(user: User) {
-    return await this.usersRepository.create(user as User);
+    try {
+      return await this.usersRepository.create(user as User);
+    } catch (error) {
+      throw new BadRequestException('Não foi possível criar o usuário!');
+    }
   }
 
   async update(
     id: number,
     user: User,
-  ): Promise<UpdateResult | NotFoundException> {
-    const updateResult = await this.usersRepository.update(id, user);
+  ): Promise<UpdateResult | NotFoundException | BadRequestException> {
+    try {
+      const updateResult = await this.usersRepository.update({ id }, user);
 
-    if (updateResult.affected === 0) {
-      throw new NotFoundException('Usuário não encontrado!');
+      if (updateResult.affected === 0) {
+        throw new NotFoundException('Usuário não encontrado!');
+      }
+
+      return updateResult;
+    } catch (error) {
+      if (error.status === HttpStatus.NOT_FOUND) {
+        throw error;
+      }
+
+      throw new BadRequestException('Não foi possível atualizar o usuário!');
     }
-
-    return updateResult;
   }
 
-  async delete(id): Promise<DeleteResult | NotFoundException> {
-    const user = await this.usersRepository.findOne({ where: { id } });
+  async delete(
+    id,
+  ): Promise<DeleteResult | NotFoundException | BadRequestException> {
+    const deletedResult = await this.usersRepository.delete({ id });
 
-    if (!user) {
+    if (deletedResult.affected === 0) {
       throw new NotFoundException('Usuário não encontrado!');
     }
 
-    return await this.usersRepository.delete(user.id);
+    return deletedResult;
   }
 }

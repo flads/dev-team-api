@@ -6,7 +6,6 @@ import {
   Param,
   Put,
   Delete,
-  BadRequestException,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { CreateDto } from './dtos/create.dto';
@@ -21,8 +20,8 @@ export class UsersController {
   @ApiOperation({ summary: 'Find Users' })
   @ApiResponse({ status: 200, description: 'Ok' })
   @Get()
-  async find() {
-    return await this.usersService.find({});
+  async findAll() {
+    return await this.usersService.findAll({});
   }
 
   @ApiOperation({ summary: 'Find User' })
@@ -37,11 +36,7 @@ export class UsersController {
   @ApiResponse({ status: 400, description: 'Bad Request' })
   @Post()
   async create(@Body() body: CreateDto) {
-    try {
-      return await this.usersService.create(body as User);
-    } catch (error) {
-      throw new BadRequestException('Não foi possível criar o usuário!');
-    }
+    return await this.usersService.create(body as User);
   }
 
   @ApiOperation({ summary: 'Update User' })
@@ -49,11 +44,7 @@ export class UsersController {
   @ApiResponse({ status: 400, description: 'Bad Request' })
   @Put('/:id')
   async update(@Param('id') id: number, @Body() body: UpdateDto) {
-    try {
-      return await this.usersService.update(id, body as User);
-    } catch (error) {
-      throw new BadRequestException('Não foi possível atualizar o usuário!');
-    }
+    return await this.usersService.update(id, body as User);
   }
 
   @ApiOperation({ summary: 'Delete User' })
