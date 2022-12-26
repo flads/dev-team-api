@@ -66,6 +66,16 @@
     "webpack-node-externals": "^3.0.0"
   },
   "jest": {
+    "coveragePathIgnorePatterns": [
+      "src/common/interfaces",
+      "src/common/validations",
+      "src/config",
+      "src/database",
+      "src/main.ts",
+      "node_modules",
+      ".module.ts",
+      ".mock.ts"
+    ],
     "moduleFileExtensions": [
       "js",
       "json",
