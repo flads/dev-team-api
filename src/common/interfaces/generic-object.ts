@@ -1,3 +1,3 @@
-export interface LiteralObject {
+export interface ObjectLiteral {
   [key: string]: any;
 }
