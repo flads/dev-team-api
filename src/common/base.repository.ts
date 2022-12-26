@@ -1,31 +1,51 @@
-import { DataSource, EntityTarget, UpdateResult } from 'typeorm';
+import {
+  DataSource,
+  DeleteResult,
+  EntityTarget,
+  FindOneOptions,
+  FindOptionsWhere,
+  Repository,
+  UpdateResult,
+} from 'typeorm';
 import { Injectable } from '@nestjs/common';
-import { LiteralObject } from './interfaces/generic-object';
+import { ObjectLiteral } from './interfaces/generic-object';
 import * as moment from 'moment';
 
 @Injectable()
-export class BaseRepository<T> {
-  protected repository;
+export class BaseRepository<Entity extends ObjectLiteral> {
+  protected repository: Repository<Entity>;
 
-  constructor(entity: EntityTarget<T>, dataSource: DataSource) {
+  constructor(entity: EntityTarget<Entity>, dataSource: DataSource) {
     this.repository = dataSource.getRepository(entity);
   }
 
-  async create(entity: LiteralObject): Promise<T> {
+  async find(options: FindOneOptions<Entity>) {
+    return await this.repository.find(options);
+  }
+
+  async findOne(options: FindOneOptions<Entity>) {
+    return await this.repository.findOne(options);
+  }
+
+  async create(entity: ObjectLiteral): Promise<Entity> {
     const now = moment().toDate();
 
     entity.created_at = now;
     entity.updated_at = now;
 
-    return await this.repository.save(entity);
+    return await this.repository.save(entity as Entity);
   }
 
   async update(
-    criteria: string | number | LiteralObject,
-    entity: LiteralObject,
+    criteria: FindOptionsWhere<Entity>,
+    entity: ObjectLiteral,
   ): Promise<UpdateResult> {
     entity.updated_at = moment().toDate();
 
-    return await this.repository.update(criteria, entity);
+    return await this.repository.update(criteria, entity as Entity);
+  }
+
+  async delete(criteria: FindOptionsWhere<Entity>): Promise<DeleteResult> {
+    return await this.repository.delete(criteria);
   }
 }

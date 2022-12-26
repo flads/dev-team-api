@@ -3,10 +3,11 @@ import {
   DeleteResult,
   FindManyOptions,
   FindOneOptions,
+  FindOptionsWhere,
 } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
-import { BaseRepository } from 'src/common/base.repository';
+import { BaseRepository } from '../common/base.repository';
 import { User } from './entities/user.entity';
 
 @Injectable()
@@ -15,23 +16,23 @@ export class UsersRepository extends BaseRepository<User> {
     super(User, dataSource);
   }
 
-  async find(options: FindManyOptions): Promise<User[]> {
-    return await this.repository.find(options);
+  async findAll(options: FindManyOptions<User>): Promise<User[]> {
+    return await super.find(options);
   }
 
   async findOne(options: FindOneOptions<User>): Promise<User> {
-    return await this.repository.findOne(options);
+    return await super.findOne(options);
   }
 
   async create(user: User) {
     return await super.create(user);
   }
 
-  async update(id: number, user: User) {
-    return await super.update({ id }, user);
+  async update(criteria: FindOptionsWhere<User>, user: User) {
+    return await super.update(criteria, user);
   }
 
-  async delete(id: number): Promise<DeleteResult> {
-    return await this.repository.delete({ id });
+  async delete(criteria: FindOptionsWhere<User>): Promise<DeleteResult> {
+    return await super.delete(criteria);
   }
 }
