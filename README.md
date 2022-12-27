@@ -2,7 +2,7 @@
 
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/flads/nestjs-boilerplate/pulls)
 
-A starter template for NestJS projects using TypeORM, with Swagger API description and unit tests coverage.
+A very simple starter template for NestJS projects using TypeORM, with Swagger API description and unit tests coverage.
 
   - List users.
   - Show user.
