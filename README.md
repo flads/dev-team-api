@@ -17,7 +17,6 @@ Technologies used in this project:
 * [NestJS](https://github.com/nestjs/nest) - A progressive Node.js framework.
 * [TypeScript](https://github.com/microsoft/TypeScript) - TypeScript is a superset of JavaScript that compiles to clean JavaScript output.
 * [TypeORM](https://github.com/typeorm/typeorm) - ORM for TypeScript and JavaScript (ES7, ES6, ES5).
-
 * [Swagger](https://github.com/nestjs/swagger) - OpenAPI (Swagger) module for Nest framework (node.js).
 * [PostgreSQL](https://github.com/postgres/postgres) - PostgreSQL is a powerful, open source object-relational database system.
 
