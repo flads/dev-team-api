@@ -1,7 +1,7 @@
 {
   "name": "nestjs-boilerplate",
   "version": "0.0.1",
-  "description": "My starter template for NestJS projects.",
+  "description": "A starter template for NestJS projects.",
   "author": "flads",
   "private": true,
   "license": "MIT",
