@@ -57,8 +57,7 @@ npm run start:dev
 ```
 
 ### Swagger
-Access the API description at http://127.0.0.1:3000/swagger.
-![Demo](https://raw.githubusercontent.com/flads/nestjs-boilerplate/master/nestjs-boilerplate-swagger.png)
+Access the API description at *http://127.0.0.1:3000/swagger*.
 
 ### Development
 
