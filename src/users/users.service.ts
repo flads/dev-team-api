@@ -1,4 +1,4 @@
-import { DeleteResult, UpdateResult } from 'typeorm';
+import { UpdateResult } from 'typeorm';
 import {
   BadRequestException,
   HttpStatus,
@@ -55,15 +55,15 @@ export class UsersService {
     }
   }
 
-  async delete(
-    id,
-  ): Promise<DeleteResult | NotFoundException | BadRequestException> {
-    const deletedResult = await this.usersRepository.delete({ id });
+  async delete(id): Promise<void | NotFoundException | BadRequestException> {
+    try {
+      const deletedResult = await this.usersRepository.delete({ id });
 
-    if (deletedResult.affected === 0) {
-      throw new NotFoundException('Usuário não encontrado!');
+      if (deletedResult.affected === 0) {
+        throw new Error();
+      }
+    } catch (error) {
+      throw new BadRequestException('Não foi possível excluir o Usuário!');
     }
-
-    return deletedResult;
   }
 }

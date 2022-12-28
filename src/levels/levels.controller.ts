@@ -6,6 +6,7 @@ import {
   Param,
   Put,
   Delete,
+  HttpCode,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateDto } from './dtos/create.dto';
@@ -20,6 +21,7 @@ export class LevelsController {
 
   @ApiOperation({ summary: 'Find Levels' })
   @ApiResponse({ status: 200, description: 'Ok' })
+  @HttpCode(200)
   @Get()
   async findAll() {
     return await this.levelsService.findAll({});
@@ -27,6 +29,7 @@ export class LevelsController {
 
   @ApiOperation({ summary: 'Find Level' })
   @ApiResponse({ status: 200, description: 'Ok' })
+  @HttpCode(200)
   @Get('/:id')
   async findOne(@Param('id') id: number) {
     return await this.levelsService.findOne({ where: { id } });
@@ -35,6 +38,7 @@ export class LevelsController {
   @ApiOperation({ summary: 'Create Level' })
   @ApiResponse({ status: 201, description: 'Created' })
   @ApiResponse({ status: 400, description: 'Bad Request' })
+  @HttpCode(201)
   @Post()
   async create(@Body() body: CreateDto) {
     return await this.levelsService.create(body as Level);
@@ -43,13 +47,16 @@ export class LevelsController {
   @ApiOperation({ summary: 'Update Level' })
   @ApiResponse({ status: 200, description: 'Updated' })
   @ApiResponse({ status: 400, description: 'Bad Request' })
+  @HttpCode(200)
   @Put('/:id')
   async update(@Param('id') id: number, @Body() body: UpdateDto) {
     return await this.levelsService.update(id, body as Level);
   }
 
   @ApiOperation({ summary: 'Delete Level' })
-  @ApiResponse({ status: 200, description: 'Deleted' })
+  @ApiResponse({ status: 204, description: 'Deleted' })
+  @ApiResponse({ status: 400, description: 'Bad Request' })
+  @HttpCode(204)
   @Delete('/:id')
   async delete(@Param('id') id: number) {
     return await this.levelsService.delete(id);

@@ -6,6 +6,7 @@ import {
   Param,
   Put,
   Delete,
+  HttpCode,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateDto } from './dtos/create.dto';
@@ -20,6 +21,7 @@ export class UsersController {
 
   @ApiOperation({ summary: 'Find Users' })
   @ApiResponse({ status: 200, description: 'Ok' })
+  @HttpCode(200)
   @Get()
   async findAll() {
     return await this.usersService.findAll({});
@@ -27,6 +29,7 @@ export class UsersController {
 
   @ApiOperation({ summary: 'Find User' })
   @ApiResponse({ status: 200, description: 'Ok' })
+  @HttpCode(200)
   @Get('/:id')
   async findOne(@Param('id') id: number) {
     return await this.usersService.findOne({ where: { id } });
@@ -35,6 +38,7 @@ export class UsersController {
   @ApiOperation({ summary: 'Create User' })
   @ApiResponse({ status: 201, description: 'Created' })
   @ApiResponse({ status: 400, description: 'Bad Request' })
+  @HttpCode(201)
   @Post()
   async create(@Body() body: CreateDto) {
     return await this.usersService.create(body as User);
@@ -43,13 +47,16 @@ export class UsersController {
   @ApiOperation({ summary: 'Update User' })
   @ApiResponse({ status: 200, description: 'Updated' })
   @ApiResponse({ status: 400, description: 'Bad Request' })
+  @HttpCode(200)
   @Put('/:id')
   async update(@Param('id') id: number, @Body() body: UpdateDto) {
     return await this.usersService.update(id, body as User);
   }
 
   @ApiOperation({ summary: 'Delete User' })
-  @ApiResponse({ status: 200, description: 'Deleted' })
+  @ApiResponse({ status: 204, description: 'Deleted' })
+  @ApiResponse({ status: 400, description: 'Bad Request' })
+  @HttpCode(204)
   @Delete('/:id')
   async delete(@Param('id') id: number) {
     return await this.usersService.delete(id);

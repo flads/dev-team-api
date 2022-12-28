@@ -1,4 +1,4 @@
-import { DeleteResult, FindManyOptions, UpdateResult } from 'typeorm';
+import { FindManyOptions, UpdateResult } from 'typeorm';
 import {
   BadRequestException,
   HttpStatus,
@@ -55,15 +55,15 @@ export class LevelsService {
     }
   }
 
-  async delete(
-    id,
-  ): Promise<DeleteResult | NotFoundException | BadRequestException> {
-    const deletedResult = await this.levelsRepository.delete({ id });
+  async delete(id): Promise<void | NotFoundException | BadRequestException> {
+    try {
+      const deletedResult = await this.levelsRepository.delete({ id });
 
-    if (deletedResult.affected === 0) {
-      throw new NotFoundException('Nível não encontrado!');
+      if (deletedResult.affected === 0) {
+        throw new Error();
+      }
+    } catch (error) {
+      throw new BadRequestException('Não foi possível excluir o Nível!');
     }
-
-    return deletedResult;
   }
 }
