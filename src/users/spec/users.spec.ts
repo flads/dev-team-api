@@ -35,18 +35,24 @@ describe('Users', () => {
     johnDoe = {
       id: 1,
       name: 'John Doe',
-      email: 'johndoe@example.com',
+      level_id: 1,
+      gender: 'male',
+      birthdate: '2002-12-01 00:00:00',
+      hobby: 'Teaching',
       created_at: now,
       updated_at: now,
-    };
+    } as User;
 
     janeDoe = {
       id: 2,
       name: 'Jane Doe',
-      email: 'janedoe@example.com',
+      level_id: 1,
+      gender: 'female',
+      birthdate: '2002-12-01 00:00:00',
+      hobby: 'Teaching',
       created_at: now,
       updated_at: now,
-    };
+    } as User;
 
     users = [johnDoe, janeDoe];
 
@@ -104,7 +110,10 @@ describe('Users', () => {
     it('should create an user', async () => {
       const input: CreateDto = {
         name: 'John Doe',
-        email: 'johndoe@example.com',
+        level_id: 1,
+        gender: 'male',
+        birthdate: '2002-12-01 00:00:00',
+        hobby: 'Teaching',
       };
 
       repository.save.mockImplementation(() => johnDoe);
@@ -117,7 +126,10 @@ describe('Users', () => {
     it('should not create an user and throw a BadRequestException', async () => {
       const input: CreateDto = {
         name: 'John Doe',
-        email: 'johndoe@example.com',
+        level_id: 1,
+        gender: 'male',
+        birthdate: '2002-12-01 00:00:00',
+        hobby: 'Teaching',
       };
 
       repository.save.mockImplementation(() =>
@@ -136,7 +148,10 @@ describe('Users', () => {
     it('should update an user', async () => {
       const input: UpdateDto = {
         name: 'John Doe',
-        email: 'johndoe@example.com',
+        level_id: 1,
+        gender: 'male',
+        birthdate: '2002-12-01 00:00:00',
+        hobby: 'Teaching',
       };
 
       repository.update.mockImplementation(async () => updatedResult);
@@ -149,7 +164,10 @@ describe('Users', () => {
     it('should not update an user and throw a BadRequestException', async () => {
       const input: UpdateDto = {
         name: 'John Doe',
-        email: 'johndoe@example.com',
+        level_id: 1,
+        gender: 'male',
+        birthdate: '2002-12-01 00:00:00',
+        hobby: 'Teaching',
       };
 
       repository.update.mockImplementation(() =>
@@ -166,7 +184,10 @@ describe('Users', () => {
     it('should not found an user, not update and throw a NotFoundException', async () => {
       const input: UpdateDto = {
         name: 'John Doe',
-        email: 'johndoe@example.com',
+        level_id: 1,
+        gender: 'male',
+        birthdate: '2002-12-01 00:00:00',
+        hobby: 'Teaching',
       };
 
       updatedResult.affected = 0;
