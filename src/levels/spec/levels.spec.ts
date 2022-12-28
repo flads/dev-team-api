@@ -170,18 +170,18 @@ describe('Levels', () => {
     it('should delete a level', async () => {
       repository.delete.mockImplementation(async () => deletedResult);
 
-      expect(levelsController.delete(1)).resolves.toEqual(deletedResult);
+      expect(levelsController.delete(1)).resolves.toEqual(undefined);
 
       expect(repository.delete).toBeCalledWith({ id: 1 });
     });
 
-    it('should not found a level, not delete and throw a NotFoundException', async () => {
+    it('should not found a level, not delete and throw a BadRequestException', async () => {
       deletedResult.affected = 0;
 
       repository.delete.mockImplementation(async () => deletedResult);
 
       expect(levelsController.delete(1)).rejects.toEqual(
-        new NotFoundException('Nível não encontrado!'),
+        new BadRequestException('Não foi possível excluir o Nível!'),
       );
 
       expect(repository.delete).toBeCalledWith({ id: 1 });
