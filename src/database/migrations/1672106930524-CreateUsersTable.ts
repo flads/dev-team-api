@@ -10,8 +10,8 @@ export class CreateUsersTable1672106930524 implements MigrationInterface {
             gender VARCHAR(50),
             birthdate TIMESTAMP,
             hobby VARCHAR(255),
-            created_at TIMESTAMP NOT NULL,
-            updated_at TIMESTAMP NOT NULL,
+            created_at TIMESTAMP DEFAULT NOW(),
+            updated_at TIMESTAMP DEFAULT NOW()
             CONSTRAINT fk_level FOREIGN KEY(level_id) REFERENCES levels(id)
         );`,
     );
