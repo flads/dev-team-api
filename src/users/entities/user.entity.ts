@@ -1,7 +1,7 @@
 import { BaseEntity } from '../../common/base.entity';
-import { Entity, Column, AfterLoad } from 'typeorm';
+import { Entity, Column, AfterLoad, ManyToOne, JoinColumn } from 'typeorm';
 import * as moment from 'moment';
-
+import { Level } from '../../levels/entities/level.entity';
 @Entity('users')
 export class User extends BaseEntity {
   protected age: number;
@@ -20,6 +20,10 @@ export class User extends BaseEntity {
 
   @Column('varchar')
   hobby: string;
+
+  @ManyToOne(() => Level, (level) => level.users)
+  @JoinColumn({ name: 'level_id' })
+  level: Level;
 
   @AfterLoad()
   calculateAge() {
