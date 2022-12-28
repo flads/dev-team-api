@@ -1,16 +1,18 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class CreateUsersTable1671913313898 implements MigrationInterface {
-  name = 'CreateUsersTable1671913313898';
-
+export class CreateUsersTable1672106930524 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
       `CREATE TABLE users (
             id SERIAL PRIMARY KEY,
             name VARCHAR(50) NOT NULL,
-            email VARCHAR(255) UNIQUE NOT NULL,
+            level_id INT NOT NULL,
+            gender VARCHAR(50),
+            birthdate TIMESTAMP,
+            hobby VARCHAR(255),
             created_at TIMESTAMP NOT NULL,
-            updated_at TIMESTAMP NOT NULL
+            updated_at TIMESTAMP NOT NULL,
+            CONSTRAINT fk_level FOREIGN KEY(level_id) REFERENCES levels(id)
         );`,
     );
   }

@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsOptional } from 'class-validator';
 
 export class UpdateDto {
   @ApiProperty({
@@ -11,10 +11,34 @@ export class UpdateDto {
   name: string;
 
   @ApiProperty({
-    example: 'johndoe@example.com',
-    description: 'The email of the User',
+    example: '1',
+    description: 'The id of the User level',
     required: true,
   })
   @IsNotEmpty()
-  email: string;
+  level_id: number;
+
+  @ApiProperty({
+    example: 'male/female',
+    description: 'The gender of the User',
+    required: false,
+  })
+  @IsOptional()
+  gender?: string;
+
+  @ApiProperty({
+    example: '10/07/2000',
+    description: 'The birthdate of the User',
+    required: false,
+  })
+  @IsOptional()
+  birthdate?: string;
+
+  @ApiProperty({
+    example: 'Woodwork',
+    description: 'The hobby of the User',
+    required: false,
+  })
+  @IsOptional()
+  hobby?: string;
 }
