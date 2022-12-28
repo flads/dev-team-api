@@ -206,18 +206,18 @@ describe('Users', () => {
     it('should delete an user', async () => {
       repository.delete.mockImplementation(async () => deletedResult);
 
-      expect(usersController.delete(1)).resolves.toEqual(deletedResult);
+      expect(usersController.delete(1)).resolves.toEqual(undefined);
 
       expect(repository.delete).toBeCalledWith({ id: 1 });
     });
 
-    it('should not found an user, not delete and throw a NotFoundException', async () => {
+    it('should not found an user, not delete and throw a BadRequestException', async () => {
       deletedResult.affected = 0;
 
       repository.delete.mockImplementation(async () => deletedResult);
 
       expect(usersController.delete(1)).rejects.toEqual(
-        new NotFoundException('Usuário não encontrado!'),
+        new BadRequestException('Não foi possível excluir o Usuário!'),
       );
 
       expect(repository.delete).toBeCalledWith({ id: 1 });
