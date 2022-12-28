@@ -1,10 +1,10 @@
-import { UpdateResult } from 'typeorm';
 import {
   BadRequestException,
   HttpStatus,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { FindManyOptions, UpdateResult } from 'typeorm';
 import { User } from './entities/user.entity';
 import { UsersRepository } from './users.repository';
 
@@ -12,11 +12,13 @@ import { UsersRepository } from './users.repository';
 export class UsersService {
   constructor(private usersRepository: UsersRepository) {}
 
-  async findAll(options) {
+  async findAll(options: FindManyOptions<User>) {
     return await this.usersRepository.findAll(options);
   }
 
-  async findOne(options): Promise<User | NotFoundException> {
+  async findOne(
+    options: FindManyOptions<User>,
+  ): Promise<User | NotFoundException> {
     const user = await this.usersRepository.findOne(options);
 
     if (!user) {
@@ -55,7 +57,9 @@ export class UsersService {
     }
   }
 
-  async delete(id): Promise<void | NotFoundException | BadRequestException> {
+  async delete(
+    id: number,
+  ): Promise<void | NotFoundException | BadRequestException> {
     try {
       const deletedResult = await this.usersRepository.delete({ id });
 

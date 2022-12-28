@@ -16,7 +16,9 @@ export class LevelsService {
     return await this.levelsRepository.findAll(options);
   }
 
-  async findOne(options): Promise<Level | NotFoundException> {
+  async findOne(
+    options: FindManyOptions<Level>,
+  ): Promise<Level | NotFoundException> {
     const level = await this.levelsRepository.findOne(options);
 
     if (!level) {
@@ -55,7 +57,9 @@ export class LevelsService {
     }
   }
 
-  async delete(id): Promise<void | NotFoundException | BadRequestException> {
+  async delete(
+    id: number,
+  ): Promise<void | NotFoundException | BadRequestException> {
     try {
       const deletedResult = await this.levelsRepository.delete({ id });
 
