@@ -7,13 +7,14 @@ import {
 } from '@nestjs/common';
 import { Level } from './entities/level.entity';
 import { LevelsRepository } from './levels.repository';
+import { ObjectLiteral } from 'src/common/interfaces/generic-object';
 
 @Injectable()
 export class LevelsService {
   constructor(private levelsRepository: LevelsRepository) {}
 
-  async findAll(options: FindManyOptions<Level>) {
-    return await this.levelsRepository.findAll(options);
+  async findAll(query: ObjectLiteral) {
+    return await this.levelsRepository.findAll(query);
   }
 
   async findOne(

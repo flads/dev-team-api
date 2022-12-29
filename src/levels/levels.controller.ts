@@ -7,6 +7,7 @@ import {
   Put,
   Delete,
   HttpCode,
+  Req,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateDto } from './dtos/create.dto';
@@ -23,8 +24,8 @@ export class LevelsController {
   @ApiResponse({ status: 200, description: 'Ok' })
   @HttpCode(200)
   @Get()
-  async findAll() {
-    return await this.levelsService.findAll({});
+  async findAll(@Req() req) {
+    return await this.levelsService.findAll(req.query);
   }
 
   @ApiOperation({ summary: 'Find Level' })

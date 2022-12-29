@@ -4,11 +4,14 @@ import {
   FindManyOptions,
   FindOneOptions,
   FindOptionsWhere,
+  Like,
 } from 'typeorm';
+import { BaseRepository } from '../common/base.repository';
 import { Injectable } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
-import { BaseRepository } from '../common/base.repository';
 import { Level } from './entities/level.entity';
+import { ObjectLiteral } from 'src/common/interfaces/generic-object';
+import { queryStringsToObject } from 'src/common/helpers/query.helper';
 
 @Injectable()
 export class LevelsRepository extends BaseRepository<Level> {
@@ -16,8 +19,22 @@ export class LevelsRepository extends BaseRepository<Level> {
     super(Level, dataSource);
   }
 
-  async findAll(options: FindManyOptions<Level>): Promise<Level[]> {
-    return await super.find(options);
+  async findAll(query: ObjectLiteral): Promise<ObjectLiteral> {
+    const { sort, search, take, skip } = query;
+
+    const options: FindManyOptions = { take, skip };
+
+    if (sort) {
+      options.order = queryStringsToObject(sort);
+    }
+
+    if (search) {
+      options.where = { name: Like('%' + search + '%') };
+    }
+
+    const [levels, count] = await super.findAndCount(options);
+
+    return { levels, count };
   }
 
   async findOne(options: FindOneOptions<Level>): Promise<Level> {
