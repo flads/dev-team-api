@@ -5,6 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { FindManyOptions, UpdateResult } from 'typeorm';
+import { ObjectLiteral } from 'src/common/interfaces/generic-object';
 import { User } from './entities/user.entity';
 import { UsersRepository } from './users.repository';
 
@@ -12,8 +13,8 @@ import { UsersRepository } from './users.repository';
 export class UsersService {
   constructor(private usersRepository: UsersRepository) {}
 
-  async findAll(options: FindManyOptions<User>) {
-    return await this.usersRepository.findAll(options);
+  async findAll(query: ObjectLiteral) {
+    return await this.usersRepository.findAll(query);
   }
 
   async findOne(

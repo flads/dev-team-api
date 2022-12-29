@@ -7,9 +7,11 @@ import {
   Put,
   Delete,
   HttpCode,
+  Req,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateDto } from './dtos/create.dto';
+import { Request } from 'express';
 import { UpdateDto } from './dtos/update.dto';
 import { User } from './entities/user.entity';
 import { UsersService } from './users.service';
@@ -23,8 +25,8 @@ export class UsersController {
   @ApiResponse({ status: 200, description: 'Ok' })
   @HttpCode(200)
   @Get()
-  async findAll() {
-    return await this.usersService.findAll({});
+  async findAll(@Req() req: Request) {
+    return await this.usersService.findAll(req.query);
   }
 
   @ApiOperation({ summary: 'Find User' })
