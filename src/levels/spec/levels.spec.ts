@@ -6,19 +6,30 @@ import { Level } from '../entities/level.entity';
 import { LevelsController } from '../levels.controller';
 import { LevelsRepository } from '../levels.repository';
 import { LevelsService } from '../levels.service';
+import { ObjectLiteral } from 'src/common/interfaces/generics.interface';
 import { UpdateLevelDto } from '../dtos/update.dto';
 import * as moment from 'moment';
 import * as queryHelper from '../../common/helpers/query.helper';
 
 describe('Levels', () => {
   let level: Level;
-  let levels: Level[];
+  let levelWithUsersCount: ObjectLiteral;
+  let levelsWithUsersCount: ObjectLiteral;
   let updatedResult: UpdateResult;
   let deletedResult: DeleteResult;
 
   let levelsController: LevelsController;
 
   const repositoryMock: Repository<Level> = jest.requireMock('typeorm');
+
+  const createQueryBuilder = {
+    loadRelationCountAndMap: jest.fn().mockReturnThis(),
+    take: jest.fn().mockReturnThis(),
+    skip: jest.fn().mockReturnThis(),
+    orderBy: jest.fn().mockReturnThis(),
+    where: jest.fn().mockReturnThis(),
+    getManyAndCount: jest.fn(),
+  };
 
   const repository = {
     ...repositoryMock,
@@ -27,6 +38,7 @@ describe('Levels', () => {
     save: jest.fn(),
     update: jest.fn(),
     delete: jest.fn(),
+    createQueryBuilder: jest.fn(() => createQueryBuilder),
   };
 
   const now = moment().toDate();
@@ -34,6 +46,8 @@ describe('Levels', () => {
   jest.spyOn(queryHelper, 'queryStringsToObject');
 
   beforeEach(() => {
+    jest.clearAllMocks();
+
     level = {
       id: 1,
       name: 'Júnior',
@@ -41,7 +55,8 @@ describe('Levels', () => {
       updated_at: now,
     } as Level;
 
-    levels = [level, level];
+    levelWithUsersCount = { ...level, users_count: 2 };
+    levelsWithUsersCount = [levelWithUsersCount, levelWithUsersCount];
 
     updatedResult = {
       generatedMaps: [],
@@ -66,26 +81,35 @@ describe('Levels', () => {
   describe('findAll', () => {
     it('should return an array of levels taking default quantity and not skipping', async () => {
       const expected = {
-        levels,
+        levels: levelsWithUsersCount,
         count: 2,
       };
 
-      repository.findAndCount.mockImplementation(() => [levels, 2]);
+      createQueryBuilder.getManyAndCount.mockImplementation(() => [
+        levelsWithUsersCount,
+        2,
+      ]);
 
       expect(levelsController.findAll({ query: {} } as any)).resolves.toEqual(
         expected,
       );
 
+      expect(createQueryBuilder.loadRelationCountAndMap).toBeCalledWith(
+        'levels.users_count',
+        'levels.users',
+        'user',
+      );
+      expect(createQueryBuilder.take).toBeCalledWith(10);
+      expect(createQueryBuilder.skip).toBeCalledWith(0);
+      expect(createQueryBuilder.orderBy).not.toBeCalled();
       expect(queryHelper.queryStringsToObject).not.toBeCalled();
-      expect(repository.findAndCount).toBeCalledWith({
-        take: 10,
-        skip: 0,
-      });
+      expect(createQueryBuilder.where).not.toBeCalled();
+      expect(createQueryBuilder.getManyAndCount).toBeCalledWith();
     });
 
     it('should return an array of levels searching by "Júnior"', async () => {
       const expected = {
-        levels,
+        levels: levelsWithUsersCount,
         count: 2,
       };
 
@@ -95,23 +119,32 @@ describe('Levels', () => {
 
       const findOperator = new FindOperator('like', '%Júnior%');
 
-      repository.findAndCount.mockImplementation(() => [levels, 2]);
+      createQueryBuilder.getManyAndCount.mockImplementation(() => [
+        levelsWithUsersCount,
+        2,
+      ]);
 
       expect(levelsController.findAll({ query } as any)).resolves.toEqual(
         expected,
       );
 
+      expect(createQueryBuilder.loadRelationCountAndMap).toBeCalledWith(
+        'levels.users_count',
+        'levels.users',
+        'user',
+      );
+      expect(createQueryBuilder.take).toBeCalledWith(10);
+      expect(createQueryBuilder.skip).toBeCalledWith(0);
+      expect(createQueryBuilder.where).toBeCalledWith({ name: findOperator });
+      expect(createQueryBuilder.getManyAndCount).toBeCalledWith();
+
+      expect(createQueryBuilder.orderBy).not.toBeCalled();
       expect(queryHelper.queryStringsToObject).not.toBeCalled();
-      expect(repository.findAndCount).toBeCalledWith({
-        take: 10,
-        skip: 0,
-        where: { name: findOperator },
-      });
     });
 
     it('should return an array of levels sorting by id asc, taking four levels and skipping two', async () => {
       const expected = {
-        levels,
+        levels: levelsWithUsersCount,
         count: 2,
       };
 
@@ -121,18 +154,27 @@ describe('Levels', () => {
         skip: 2,
       };
 
-      repository.findAndCount.mockImplementation(() => [levels, 2]);
+      createQueryBuilder.getManyAndCount.mockImplementation(() => [
+        levelsWithUsersCount,
+        2,
+      ]);
 
       expect(levelsController.findAll({ query } as any)).resolves.toEqual(
         expected,
       );
 
+      expect(createQueryBuilder.loadRelationCountAndMap).toBeCalledWith(
+        'levels.users_count',
+        'levels.users',
+        'user',
+      );
+      expect(createQueryBuilder.take).toBeCalledWith(4);
+      expect(createQueryBuilder.skip).toBeCalledWith(2);
+      expect(createQueryBuilder.orderBy).toBeCalledWith({ id: 'asc' });
       expect(queryHelper.queryStringsToObject).toBeCalledWith('id asc');
-      expect(repository.findAndCount).toBeCalledWith({
-        order: { id: 'asc' },
-        take: 4,
-        skip: 2,
-      });
+      expect(createQueryBuilder.getManyAndCount).toBeCalledWith();
+
+      expect(createQueryBuilder.where).not.toBeCalled();
     });
   });
 
