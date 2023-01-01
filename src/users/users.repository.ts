@@ -9,7 +9,7 @@ import {
 import { BaseRepository } from '../common/base.repository';
 import { Injectable } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
-import { ObjectLiteral } from 'src/common/interfaces/generic-object';
+import { ObjectLiteral } from 'src/common/interfaces/generics.interface';
 import { queryStringsToObject } from 'src/common/helpers/query.helper';
 import { User } from './entities/user.entity';
 

@@ -9,7 +9,7 @@ import {
   UpdateResult,
 } from 'typeorm';
 import { Injectable } from '@nestjs/common';
-import { ObjectLiteral } from './interfaces/generic-object';
+import { ObjectLiteral } from './interfaces/generics.interface';
 import * as moment from 'moment';
 
 @Injectable()

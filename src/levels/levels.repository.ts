@@ -10,7 +10,7 @@ import { BaseRepository } from '../common/base.repository';
 import { Injectable } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { Level } from './entities/level.entity';
-import { ObjectLiteral } from 'src/common/interfaces/generic-object';
+import { ObjectLiteral } from 'src/common/interfaces/generics.interface';
 import { queryStringsToObject } from 'src/common/helpers/query.helper';
 
 @Injectable()

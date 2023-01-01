@@ -1,4 +1,4 @@
-import { ObjectLiteral } from '../interfaces/generic-object';
+import { ObjectLiteral } from '../interfaces/generics.interface';
 
 export const queryStringsToObject = (queryStrings: string): ObjectLiteral => {
   const result = {};
