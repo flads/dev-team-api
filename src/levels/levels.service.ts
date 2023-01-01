@@ -5,15 +5,15 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { FindAllQuery } from '../common/interfaces/parameters.interface';
 import { Level } from './entities/level.entity';
 import { LevelsRepository } from './levels.repository';
-import { ObjectLiteral } from 'src/common/interfaces/generic-object';
 
 @Injectable()
 export class LevelsService {
   constructor(private levelsRepository: LevelsRepository) {}
 
-  async findAll(query: ObjectLiteral) {
+  async findAll(query: FindAllQuery) {
     return await this.levelsRepository.findAll(query);
   }
 

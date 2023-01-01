@@ -7,11 +7,12 @@ import {
   Like,
 } from 'typeorm';
 import { BaseRepository } from '../common/base.repository';
+import { FindAllQuery } from '../common/interfaces/parameters.interface';
 import { Injectable } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { Level } from './entities/level.entity';
 import { ObjectLiteral } from 'src/common/interfaces/generics.interface';
-import { queryStringsToObject } from 'src/common/helpers/query.helper';
+import { queryStringsToObject } from '../common/helpers/query.helper';
 
 @Injectable()
 export class LevelsRepository extends BaseRepository<Level> {
@@ -19,7 +20,7 @@ export class LevelsRepository extends BaseRepository<Level> {
     super(Level, dataSource);
   }
 
-  async findAll(query: ObjectLiteral): Promise<ObjectLiteral> {
+  async findAll(query: FindAllQuery): Promise<ObjectLiteral> {
     const { sort, search, take, skip } = query;
 
     const options: FindManyOptions = { take, skip };
