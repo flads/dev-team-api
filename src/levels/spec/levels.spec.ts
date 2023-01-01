@@ -1,13 +1,14 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { connectionSource } from '../../../ormconfig';
 import { CreateDto } from '../dtos/create.dto';
-import { DeleteResult, Repository, UpdateResult } from 'typeorm';
+import { DeleteResult, FindOperator, Repository, UpdateResult } from 'typeorm';
 import { Level } from '../entities/level.entity';
 import { LevelsController } from '../levels.controller';
 import { LevelsRepository } from '../levels.repository';
 import { LevelsService } from '../levels.service';
 import { UpdateDto } from '../dtos/update.dto';
 import * as moment from 'moment';
+import * as queryHelper from '../../common/helpers/query.helper';
 
 describe('Levels', () => {
   let level: Level;
@@ -21,7 +22,7 @@ describe('Levels', () => {
 
   const repository = {
     ...repositoryMock,
-    find: jest.fn(),
+    findAndCount: jest.fn(),
     findOne: jest.fn(),
     save: jest.fn(),
     update: jest.fn(),
@@ -29,6 +30,8 @@ describe('Levels', () => {
   };
 
   const now = moment().toDate();
+
+  jest.spyOn(queryHelper, 'queryStringsToObject');
 
   beforeEach(() => {
     level = {
@@ -61,12 +64,75 @@ describe('Levels', () => {
   });
 
   describe('findAll', () => {
-    it('should return an array of levels', async () => {
-      repository.find.mockImplementation(() => levels);
+    it('should return an array of levels taking default quantity and not skipping', async () => {
+      const expected = {
+        levels,
+        count: 2,
+      };
 
-      expect(levelsController.findAll()).resolves.toEqual(levels);
+      repository.findAndCount.mockImplementation(() => [levels, 2]);
 
-      expect(repository.find).toBeCalledWith({});
+      expect(levelsController.findAll({ query: {} } as any)).resolves.toEqual(
+        expected,
+      );
+
+      expect(queryHelper.queryStringsToObject).not.toBeCalled();
+      expect(repository.findAndCount).toBeCalledWith({
+        take: 10,
+        skip: 0,
+      });
+    });
+
+    it('should return an array of levels searching by "Júnior"', async () => {
+      const expected = {
+        levels,
+        count: 2,
+      };
+
+      const query = {
+        search: 'Júnior',
+      };
+
+      const findOperator = new FindOperator('like', '%Júnior%');
+
+      repository.findAndCount.mockImplementation(() => [levels, 2]);
+
+      expect(levelsController.findAll({ query } as any)).resolves.toEqual(
+        expected,
+      );
+
+      expect(queryHelper.queryStringsToObject).not.toBeCalled();
+      expect(repository.findAndCount).toBeCalledWith({
+        take: 10,
+        skip: 0,
+        where: { name: findOperator },
+      });
+    });
+
+    it('should return an array of levels sorting by id asc, taking four levels and skipping two', async () => {
+      const expected = {
+        levels,
+        count: 2,
+      };
+
+      const query = {
+        sort: 'id asc',
+        take: 4,
+        skip: 2,
+      };
+
+      repository.findAndCount.mockImplementation(() => [levels, 2]);
+
+      expect(levelsController.findAll({ query } as any)).resolves.toEqual(
+        expected,
+      );
+
+      expect(queryHelper.queryStringsToObject).toBeCalledWith('id asc');
+      expect(repository.findAndCount).toBeCalledWith({
+        order: { id: 'asc' },
+        take: 4,
+        skip: 2,
+      });
     });
   });
 
