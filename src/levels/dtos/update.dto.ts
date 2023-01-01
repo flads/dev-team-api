@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
 
-export class UpdateDto {
+export class UpdateLevelDto {
   @ApiProperty({
     example: 'Júnior',
     description: 'The name of the Level',

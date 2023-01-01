@@ -9,10 +9,10 @@ import {
   HttpCode,
   Req,
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { CreateDto } from './dtos/create.dto';
+import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { CreateUserDto } from './dtos/create.dto';
 import { Request } from 'express';
-import { UpdateDto } from './dtos/update.dto';
+import { UpdateUserDto } from './dtos/update.dto';
 import { User } from './entities/user.entity';
 import { UsersService } from './users.service';
 
@@ -22,6 +22,15 @@ export class UsersController {
   constructor(private usersService: UsersService) {}
 
   @ApiOperation({ summary: 'Find Users' })
+  @ApiQuery({
+    name: 'sort',
+    type: 'string',
+    required: false,
+    description: 'Examples: "id desc", "name asc", "name asc, id asc"',
+  })
+  @ApiQuery({ name: 'search', type: 'string', required: false })
+  @ApiQuery({ name: 'take', type: 'number', required: false })
+  @ApiQuery({ name: 'skip', type: 'number', required: false })
   @ApiResponse({ status: 200, description: 'Ok' })
   @HttpCode(200)
   @Get()
@@ -42,7 +51,7 @@ export class UsersController {
   @ApiResponse({ status: 400, description: 'Bad Request' })
   @HttpCode(201)
   @Post()
-  async create(@Body() body: CreateDto) {
+  async create(@Body() body: CreateUserDto) {
     return await this.usersService.create(body as User);
   }
 
@@ -51,7 +60,7 @@ export class UsersController {
   @ApiResponse({ status: 400, description: 'Bad Request' })
   @HttpCode(200)
   @Put('/:id')
-  async update(@Param('id') id: number, @Body() body: UpdateDto) {
+  async update(@Param('id') id: number, @Body() body: UpdateUserDto) {
     return await this.usersService.update(id, body as User);
   }
 

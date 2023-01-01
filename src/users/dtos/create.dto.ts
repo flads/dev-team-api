@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsOptional } from 'class-validator';
 
-export class CreateDto {
+export class CreateUserDto {
   @ApiProperty({
     example: 'John Doe',
     description: 'The name of the User',
@@ -19,7 +19,7 @@ export class CreateDto {
   level_id: number;
 
   @ApiProperty({
-    example: 'male/female',
+    example: 'male',
     description: 'The gender of the User',
     required: false,
   })

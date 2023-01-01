@@ -9,9 +9,9 @@ import {
   HttpCode,
   Req,
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { CreateDto } from './dtos/create.dto';
-import { UpdateDto } from './dtos/update.dto';
+import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { CreateLevelDto } from './dtos/create.dto';
+import { UpdateLevelDto } from './dtos/update.dto';
 import { Level } from './entities/level.entity';
 import { LevelsService } from './levels.service';
 
@@ -21,6 +21,15 @@ export class LevelsController {
   constructor(private levelsService: LevelsService) {}
 
   @ApiOperation({ summary: 'Find Levels' })
+  @ApiQuery({
+    name: 'sort',
+    type: 'string',
+    required: false,
+    description: 'Examples: "id desc", "name asc", "name asc, id asc"',
+  })
+  @ApiQuery({ name: 'search', type: 'string', required: false })
+  @ApiQuery({ name: 'take', type: 'number', required: false })
+  @ApiQuery({ name: 'skip', type: 'number', required: false })
   @ApiResponse({ status: 200, description: 'Ok' })
   @HttpCode(200)
   @Get()
@@ -41,7 +50,7 @@ export class LevelsController {
   @ApiResponse({ status: 400, description: 'Bad Request' })
   @HttpCode(201)
   @Post()
-  async create(@Body() body: CreateDto) {
+  async create(@Body() body: CreateLevelDto) {
     return await this.levelsService.create(body as Level);
   }
 
@@ -50,7 +59,7 @@ export class LevelsController {
   @ApiResponse({ status: 400, description: 'Bad Request' })
   @HttpCode(200)
   @Put('/:id')
-  async update(@Param('id') id: number, @Body() body: UpdateDto) {
+  async update(@Param('id') id: number, @Body() body: UpdateLevelDto) {
     return await this.levelsService.update(id, body as Level);
   }
 

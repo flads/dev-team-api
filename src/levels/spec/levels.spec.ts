@@ -1,12 +1,12 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { connectionSource } from '../../../ormconfig';
-import { CreateDto } from '../dtos/create.dto';
+import { CreateLevelDto } from '../dtos/create.dto';
 import { DeleteResult, FindOperator, Repository, UpdateResult } from 'typeorm';
 import { Level } from '../entities/level.entity';
 import { LevelsController } from '../levels.controller';
 import { LevelsRepository } from '../levels.repository';
 import { LevelsService } from '../levels.service';
-import { UpdateDto } from '../dtos/update.dto';
+import { UpdateLevelDto } from '../dtos/update.dto';
 import * as moment from 'moment';
 import * as queryHelper from '../../common/helpers/query.helper';
 
@@ -158,7 +158,7 @@ describe('Levels', () => {
 
   describe('create', () => {
     it('should create a level', async () => {
-      const input: CreateDto = {
+      const input: CreateLevelDto = {
         name: 'Júnior',
       };
 
@@ -170,7 +170,7 @@ describe('Levels', () => {
     });
 
     it('should not create a level and throw a BadRequestException', async () => {
-      const input: CreateDto = {
+      const input: CreateLevelDto = {
         name: 'Júnior',
       };
 
@@ -188,7 +188,7 @@ describe('Levels', () => {
 
   describe('update', () => {
     it('should update a level', async () => {
-      const input: UpdateDto = {
+      const input: UpdateLevelDto = {
         name: 'Júnior',
       };
 
@@ -200,7 +200,7 @@ describe('Levels', () => {
     });
 
     it('should not update a level and throw a BadRequestException', async () => {
-      const input: UpdateDto = {
+      const input: UpdateLevelDto = {
         name: 'Júnior',
       };
 
@@ -216,7 +216,7 @@ describe('Levels', () => {
     });
 
     it('should not found a level, not update and throw a NotFoundException', async () => {
-      const input: UpdateDto = {
+      const input: UpdateLevelDto = {
         name: 'Júnior',
       };
 

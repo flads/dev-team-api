@@ -1,8 +1,8 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { connectionSource } from '../../../ormconfig';
-import { CreateDto } from '../dtos/create.dto';
+import { CreateUserDto } from '../dtos/create.dto';
 import { DeleteResult, FindOperator, Repository, UpdateResult } from 'typeorm';
-import { UpdateDto } from '../dtos/update.dto';
+import { UpdateUserDto } from '../dtos/update.dto';
 import { User } from '../entities/user.entity';
 import { UsersController } from '../users.controller';
 import { UsersRepository } from '../users.repository';
@@ -180,7 +180,7 @@ describe('Users', () => {
 
   describe('create', () => {
     it('should create an user', async () => {
-      const input: CreateDto = {
+      const input: CreateUserDto = {
         name: 'John Doe',
         level_id: 1,
         gender: 'male',
@@ -196,7 +196,7 @@ describe('Users', () => {
     });
 
     it('should not create an user and throw a BadRequestException', async () => {
-      const input: CreateDto = {
+      const input: CreateUserDto = {
         name: 'John Doe',
         level_id: 1,
         gender: 'male',
@@ -218,7 +218,7 @@ describe('Users', () => {
 
   describe('update', () => {
     it('should update an user', async () => {
-      const input: UpdateDto = {
+      const input: UpdateUserDto = {
         name: 'John Doe',
         level_id: 1,
         gender: 'male',
@@ -234,7 +234,7 @@ describe('Users', () => {
     });
 
     it('should not update an user and throw a BadRequestException', async () => {
-      const input: UpdateDto = {
+      const input: UpdateUserDto = {
         name: 'John Doe',
         level_id: 1,
         gender: 'male',
@@ -254,7 +254,7 @@ describe('Users', () => {
     });
 
     it('should not found an user, not update and throw a NotFoundException', async () => {
-      const input: UpdateDto = {
+      const input: UpdateUserDto = {
         name: 'John Doe',
         level_id: 1,
         gender: 'male',
