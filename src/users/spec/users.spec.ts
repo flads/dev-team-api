@@ -1,13 +1,14 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { connectionSource } from '../../../ormconfig';
 import { CreateDto } from '../dtos/create.dto';
-import { DeleteResult, Repository, UpdateResult } from 'typeorm';
+import { DeleteResult, FindOperator, Repository, UpdateResult } from 'typeorm';
 import { UpdateDto } from '../dtos/update.dto';
 import { User } from '../entities/user.entity';
 import { UsersController } from '../users.controller';
 import { UsersRepository } from '../users.repository';
 import { UsersService } from '../users.service';
 import * as moment from 'moment';
+import * as queryHelper from '../../common/helpers/query.helper';
 
 describe('Users', () => {
   let johnDoe: User;
@@ -22,7 +23,7 @@ describe('Users', () => {
 
   const repository = {
     ...repositoryMock,
-    find: jest.fn(),
+    findAndCount: jest.fn(),
     findOne: jest.fn(),
     save: jest.fn(),
     update: jest.fn(),
@@ -31,7 +32,11 @@ describe('Users', () => {
 
   const now = moment().toDate();
 
+  jest.spyOn(queryHelper, 'queryStringsToObject');
+
   beforeEach(() => {
+    jest.clearAllMocks();
+
     johnDoe = {
       id: 1,
       name: 'John Doe',
@@ -77,12 +82,79 @@ describe('Users', () => {
   });
 
   describe('findAll', () => {
-    it('should return an array of users', async () => {
-      repository.find.mockImplementation(() => users);
+    it('should return an array of users taking default quantity and not skipping', async () => {
+      const expected = {
+        users,
+        count: 2,
+      };
 
-      expect(usersController.findAll()).resolves.toEqual(users);
+      repository.findAndCount.mockImplementation(() => [users, 2]);
 
-      expect(repository.find).toBeCalledWith({});
+      expect(usersController.findAll({ query: {} } as any)).resolves.toEqual(
+        expected,
+      );
+
+      expect(queryHelper.queryStringsToObject).not.toBeCalled();
+      expect(repository.findAndCount).toBeCalledWith({
+        take: 10,
+        skip: 0,
+      });
+    });
+
+    it('should return an array of users searching by "John"', async () => {
+      const expected = {
+        users,
+        count: 2,
+      };
+
+      const query = {
+        search: 'John',
+      };
+
+      const findOperator = new FindOperator('like', '%John%');
+
+      repository.findAndCount.mockImplementation(() => [users, 2]);
+
+      expect(usersController.findAll({ query } as any)).resolves.toEqual(
+        expected,
+      );
+
+      expect(queryHelper.queryStringsToObject).not.toBeCalled();
+      expect(repository.findAndCount).toBeCalledWith({
+        take: 10,
+        skip: 0,
+        where: [
+          { name: findOperator },
+          { gender: findOperator },
+          { hobby: findOperator },
+        ],
+      });
+    });
+
+    it('should return an array of users sorting by id asc, taking four users and skipping two', async () => {
+      const expected = {
+        users,
+        count: 2,
+      };
+
+      const query = {
+        sort: 'id asc',
+        take: 4,
+        skip: 2,
+      };
+
+      repository.findAndCount.mockImplementation(() => [users, 2]);
+
+      expect(usersController.findAll({ query } as any)).resolves.toEqual(
+        expected,
+      );
+
+      expect(queryHelper.queryStringsToObject).toBeCalledWith('id asc');
+      expect(repository.findAndCount).toBeCalledWith({
+        order: { id: 'asc' },
+        take: 4,
+        skip: 2,
+      });
     });
   });
 
