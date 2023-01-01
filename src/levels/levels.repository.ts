@@ -1,7 +1,6 @@
 import {
   DataSource,
   DeleteResult,
-  FindManyOptions,
   FindOneOptions,
   FindOptionsWhere,
   Like,
@@ -21,19 +20,26 @@ export class LevelsRepository extends BaseRepository<Level> {
   }
 
   async findAll(query: FindAllQuery): Promise<ObjectLiteral> {
-    const { sort, search, take, skip } = query;
+    const { sort, search } = query;
 
-    const options: FindManyOptions = { take, skip };
+    const take = query.take || 10;
+    const skip = query.skip || 0;
+
+    const queryBuilder = this.repository
+      .createQueryBuilder('levels')
+      .loadRelationCountAndMap('levels.users_count', 'levels.users', 'user')
+      .take(take)
+      .skip(skip);
 
     if (sort) {
-      options.order = queryStringsToObject(sort);
+      queryBuilder.orderBy(queryStringsToObject(sort));
     }
 
     if (search) {
-      options.where = { name: Like('%' + search + '%') };
+      queryBuilder.where({ name: Like('%' + search + '%') });
     }
 
-    const [levels, count] = await super.findAndCount(options);
+    const [levels, count] = await queryBuilder.getManyAndCount();
 
     return { levels, count };
   }
