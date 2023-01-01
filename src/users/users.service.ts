@@ -4,8 +4,8 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { FindAllQuery } from '../common/interfaces/parameters.interface';
 import { FindManyOptions, UpdateResult } from 'typeorm';
-import { ObjectLiteral } from 'src/common/interfaces/generic-object';
 import { User } from './entities/user.entity';
 import { UsersRepository } from './users.repository';
 
@@ -13,7 +13,7 @@ import { UsersRepository } from './users.repository';
 export class UsersService {
   constructor(private usersRepository: UsersRepository) {}
 
-  async findAll(query: ObjectLiteral) {
+  async findAll(query: FindAllQuery) {
     return await this.usersRepository.findAll(query);
   }
 

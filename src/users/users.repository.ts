@@ -7,10 +7,11 @@ import {
   Like,
 } from 'typeorm';
 import { BaseRepository } from '../common/base.repository';
+import { FindAllQuery } from '../common/interfaces/parameters.interface';
 import { Injectable } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { ObjectLiteral } from 'src/common/interfaces/generics.interface';
-import { queryStringsToObject } from 'src/common/helpers/query.helper';
+import { queryStringsToObject } from '../common/helpers/query.helper';
 import { User } from './entities/user.entity';
 
 @Injectable()
@@ -19,17 +20,15 @@ export class UsersRepository extends BaseRepository<User> {
     super(User, dataSource);
   }
 
-  async findAll(query: ObjectLiteral): Promise<ObjectLiteral> {
-    const { sort, search, take, skip } = query;
+  async findAll(query: FindAllQuery): Promise<ObjectLiteral> {
+    const options: FindManyOptions = { take: query.take, skip: query.skip };
 
-    const options: FindManyOptions = { take, skip };
-
-    if (sort) {
-      options.order = queryStringsToObject(sort);
+    if (query.sort) {
+      options.order = queryStringsToObject(query.sort);
     }
 
-    if (search) {
-      const like = Like('%' + search + '%');
+    if (query.search) {
+      const like = Like('%' + query.search + '%');
 
       options.where = [{ name: like }, { gender: like }, { hobby: like }];
     }
