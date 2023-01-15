@@ -1,25 +1,25 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { connectionSource } from '../../../ormconfig';
-import { CreateUserDto } from '../dtos/create.dto';
+import { CreateDeveloperDto } from '../dtos/create.dto';
 import { DeleteResult, FindOperator, Repository, UpdateResult } from 'typeorm';
-import { UpdateUserDto } from '../dtos/update.dto';
-import { User } from '../entities/user.entity';
-import { UsersController } from '../users.controller';
-import { UsersRepository } from '../users.repository';
-import { UsersService } from '../users.service';
+import { UpdateDeveloperDto } from '../dtos/update.dto';
+import { Developer } from '../entities/developer.entity';
+import { DevelopersController } from '../developers.controller';
+import { DevelopersRepository } from '../developers.repository';
+import { DevelopersService } from '../developers.service';
 import * as moment from 'moment';
 import * as queryHelper from '../../common/helpers/query.helper';
 
-describe('Users', () => {
-  let johnDoe: User;
-  let janeDoe: User;
-  let users: User[];
+describe('Developers', () => {
+  let johnDoe: Developer;
+  let janeDoe: Developer;
+  let developers: Developer[];
   let updatedResult: UpdateResult;
   let deletedResult: DeleteResult;
 
-  let usersController: UsersController;
+  let developersController: DevelopersController;
 
-  const repositoryMock: Repository<User> = jest.requireMock('typeorm');
+  const repositoryMock: Repository<Developer> = jest.requireMock('typeorm');
 
   const repository = {
     ...repositoryMock,
@@ -46,7 +46,7 @@ describe('Users', () => {
       hobby: 'Teaching',
       created_at: now,
       updated_at: now,
-    } as User;
+    } as Developer;
 
     janeDoe = {
       id: 2,
@@ -57,9 +57,9 @@ describe('Users', () => {
       hobby: 'Teaching',
       created_at: now,
       updated_at: now,
-    } as User;
+    } as Developer;
 
-    users = [johnDoe, janeDoe];
+    developers = [johnDoe, janeDoe];
 
     updatedResult = {
       generatedMaps: [],
@@ -76,23 +76,23 @@ describe('Users', () => {
       .fn()
       .mockImplementation(() => repository);
 
-    usersController = new UsersController(
-      new UsersService(new UsersRepository(connectionSource)),
+    developersController = new DevelopersController(
+      new DevelopersService(new DevelopersRepository(connectionSource)),
     );
   });
 
   describe('findAll', () => {
-    it('should return an array of users taking default quantity and not skipping', async () => {
+    it('should return an array of developers taking default quantity and not skipping', async () => {
       const expected = {
-        users,
+        developers,
         count: 2,
       };
 
-      repository.findAndCount.mockImplementation(() => [users, 2]);
+      repository.findAndCount.mockImplementation(() => [developers, 2]);
 
-      expect(usersController.findAll({ query: {} } as any)).resolves.toEqual(
-        expected,
-      );
+      expect(
+        developersController.findAll({ query: {} } as any),
+      ).resolves.toEqual(expected);
 
       expect(queryHelper.queryStringsToObject).not.toBeCalled();
       expect(repository.findAndCount).toBeCalledWith({
@@ -101,9 +101,9 @@ describe('Users', () => {
       });
     });
 
-    it('should return an array of users searching by "John"', async () => {
+    it('should return an array of developers searching by "John"', async () => {
       const expected = {
-        users,
+        developers,
         count: 2,
       };
 
@@ -113,9 +113,9 @@ describe('Users', () => {
 
       const findOperator = new FindOperator('like', '%John%');
 
-      repository.findAndCount.mockImplementation(() => [users, 2]);
+      repository.findAndCount.mockImplementation(() => [developers, 2]);
 
-      expect(usersController.findAll({ query } as any)).resolves.toEqual(
+      expect(developersController.findAll({ query } as any)).resolves.toEqual(
         expected,
       );
 
@@ -131,9 +131,9 @@ describe('Users', () => {
       });
     });
 
-    it('should return an array of users sorting by id asc, taking four users and skipping two', async () => {
+    it('should return an array of developers sorting by id asc, taking four developers and skipping two', async () => {
       const expected = {
-        users,
+        developers,
         count: 2,
       };
 
@@ -143,9 +143,9 @@ describe('Users', () => {
         skip: 2,
       };
 
-      repository.findAndCount.mockImplementation(() => [users, 2]);
+      repository.findAndCount.mockImplementation(() => [developers, 2]);
 
-      expect(usersController.findAll({ query } as any)).resolves.toEqual(
+      expect(developersController.findAll({ query } as any)).resolves.toEqual(
         expected,
       );
 
@@ -159,19 +159,19 @@ describe('Users', () => {
   });
 
   describe('findOne', () => {
-    it('should return an user', async () => {
+    it('should return an developer', async () => {
       repository.findOne.mockImplementation(() => johnDoe);
 
-      expect(usersController.findOne(1)).resolves.toEqual(johnDoe);
+      expect(developersController.findOne(1)).resolves.toEqual(johnDoe);
 
       expect(repository.findOne).toBeCalledWith({ where: { id: 1 } });
     });
 
-    it('should not found user and throw a NotFoundException', async () => {
+    it('should not found developer and throw a NotFoundException', async () => {
       repository.findOne.mockImplementation(() => null);
 
-      expect(usersController.findOne(3)).rejects.toEqual(
-        new NotFoundException('Usuário não encontrado!'),
+      expect(developersController.findOne(3)).rejects.toEqual(
+        new NotFoundException('Desenvolvedor não encontrado!'),
       );
 
       expect(repository.findOne).toBeCalledWith({ where: { id: 3 } });
@@ -179,8 +179,8 @@ describe('Users', () => {
   });
 
   describe('create', () => {
-    it('should create an user', async () => {
-      const input: CreateUserDto = {
+    it('should create an developer', async () => {
+      const input: CreateDeveloperDto = {
         name: 'John Doe',
         level_id: 1,
         gender: 'male',
@@ -190,13 +190,13 @@ describe('Users', () => {
 
       repository.save.mockImplementation(() => johnDoe);
 
-      expect(usersController.create(input)).resolves.toEqual(johnDoe);
+      expect(developersController.create(input)).resolves.toEqual(johnDoe);
 
       expect(repository.save).toBeCalledWith(input);
     });
 
-    it('should not create an user and throw a BadRequestException', async () => {
-      const input: CreateUserDto = {
+    it('should not create an developer and throw a BadRequestException', async () => {
+      const input: CreateDeveloperDto = {
         name: 'John Doe',
         level_id: 1,
         gender: 'male',
@@ -208,8 +208,8 @@ describe('Users', () => {
         Promise.reject(new Error('Database Error!')),
       );
 
-      expect(usersController.create(input)).rejects.toEqual(
-        new BadRequestException('Não foi possível criar o usuário!'),
+      expect(developersController.create(input)).rejects.toEqual(
+        new BadRequestException('Não foi possível criar o desenvolvedor!'),
       );
 
       expect(repository.save).toBeCalledWith(input);
@@ -217,8 +217,8 @@ describe('Users', () => {
   });
 
   describe('update', () => {
-    it('should update an user', async () => {
-      const input: UpdateUserDto = {
+    it('should update an developer', async () => {
+      const input: UpdateDeveloperDto = {
         name: 'John Doe',
         level_id: 1,
         gender: 'male',
@@ -228,13 +228,15 @@ describe('Users', () => {
 
       repository.update.mockImplementation(async () => updatedResult);
 
-      expect(usersController.update(1, input)).resolves.toEqual(updatedResult);
+      expect(developersController.update(1, input)).resolves.toEqual(
+        updatedResult,
+      );
 
       expect(repository.update).toBeCalledWith({ id: 1 }, input);
     });
 
-    it('should not update an user and throw a BadRequestException', async () => {
-      const input: UpdateUserDto = {
+    it('should not update an developer and throw a BadRequestException', async () => {
+      const input: UpdateDeveloperDto = {
         name: 'John Doe',
         level_id: 1,
         gender: 'male',
@@ -246,15 +248,15 @@ describe('Users', () => {
         Promise.reject(new Error('Database Error!')),
       );
 
-      expect(usersController.update(1, input)).rejects.toEqual(
-        new BadRequestException('Não foi possível atualizar o usuário!'),
+      expect(developersController.update(1, input)).rejects.toEqual(
+        new BadRequestException('Não foi possível atualizar o desenvolvedor!'),
       );
 
       expect(repository.update).toBeCalledWith({ id: 1 }, input);
     });
 
-    it('should not found an user, not update and throw a NotFoundException', async () => {
-      const input: UpdateUserDto = {
+    it('should not found an developer, not update and throw a NotFoundException', async () => {
+      const input: UpdateDeveloperDto = {
         name: 'John Doe',
         level_id: 1,
         gender: 'male',
@@ -266,8 +268,8 @@ describe('Users', () => {
 
       repository.update.mockImplementation(async () => updatedResult);
 
-      expect(usersController.update(1, input)).rejects.toEqual(
-        new NotFoundException('Usuário não encontrado!'),
+      expect(developersController.update(1, input)).rejects.toEqual(
+        new NotFoundException('Desenvolvedor não encontrado!'),
       );
 
       expect(repository.update).toBeCalledWith({ id: 1 }, input);
@@ -275,21 +277,21 @@ describe('Users', () => {
   });
 
   describe('delete', () => {
-    it('should delete an user', async () => {
+    it('should delete an developer', async () => {
       repository.delete.mockImplementation(async () => deletedResult);
 
-      expect(usersController.delete(1)).resolves.toEqual(undefined);
+      expect(developersController.delete(1)).resolves.toEqual(undefined);
 
       expect(repository.delete).toBeCalledWith({ id: 1 });
     });
 
-    it('should not found an user, not delete and throw a BadRequestException', async () => {
+    it('should not found an developer, not delete and throw a BadRequestException', async () => {
       deletedResult.affected = 0;
 
       repository.delete.mockImplementation(async () => deletedResult);
 
-      expect(usersController.delete(1)).rejects.toEqual(
-        new BadRequestException('Não foi possível excluir o Usuário!'),
+      expect(developersController.delete(1)).rejects.toEqual(
+        new BadRequestException('Não foi possível excluir o desenvolvedor!'),
       );
 
       expect(repository.delete).toBeCalledWith({ id: 1 });

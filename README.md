@@ -4,11 +4,11 @@
 
 A very simple starter template for NestJS projects using TypeORM, with Swagger API description and unit tests coverage.
 
-  - List users.
-  - Show user.
-  - Create users.
-  - Update users.
-  - Delete users.
+  - List developers.
+  - Show developer.
+  - Create developers.
+  - Update developers.
+  - Delete developers.
 
 ### Tech
 

@@ -1,10 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsOptional } from 'class-validator';
 
-export class UpdateUserDto {
+export class UpdateDeveloperDto {
   @ApiProperty({
     example: 'John Doe',
-    description: 'The name of the User',
+    description: 'The name of the Developer',
     required: true,
   })
   @IsNotEmpty()
@@ -12,7 +12,7 @@ export class UpdateUserDto {
 
   @ApiProperty({
     example: '1',
-    description: 'The id of the User level',
+    description: 'The id of the Developer level',
     required: true,
   })
   @IsNotEmpty()
@@ -20,7 +20,7 @@ export class UpdateUserDto {
 
   @ApiProperty({
     example: 'male',
-    description: 'The gender of the User',
+    description: 'The gender of the Developer',
     required: false,
   })
   @IsOptional()
@@ -28,7 +28,7 @@ export class UpdateUserDto {
 
   @ApiProperty({
     example: '10/07/2000',
-    description: 'The birthdate of the User',
+    description: 'The birthdate of the Developer',
     required: false,
   })
   @IsOptional()
@@ -36,7 +36,7 @@ export class UpdateUserDto {
 
   @ApiProperty({
     example: 'Woodwork',
-    description: 'The hobby of the User',
+    description: 'The hobby of the Developer',
     required: false,
   })
   @IsOptional()

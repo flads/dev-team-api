@@ -13,8 +13,8 @@ import * as queryHelper from '../../common/helpers/query.helper';
 
 describe('Levels', () => {
   let level: Level;
-  let levelWithUsersCount: ObjectLiteral;
-  let levelsWithUsersCount: ObjectLiteral;
+  let levelWithDevelopersCount: ObjectLiteral;
+  let levelsWithDevelopersCount: ObjectLiteral;
   let updatedResult: UpdateResult;
   let deletedResult: DeleteResult;
 
@@ -55,8 +55,11 @@ describe('Levels', () => {
       updated_at: now,
     } as Level;
 
-    levelWithUsersCount = { ...level, users_count: 2 };
-    levelsWithUsersCount = [levelWithUsersCount, levelWithUsersCount];
+    levelWithDevelopersCount = { ...level, developers_count: 2 };
+    levelsWithDevelopersCount = [
+      levelWithDevelopersCount,
+      levelWithDevelopersCount,
+    ];
 
     updatedResult = {
       generatedMaps: [],
@@ -81,12 +84,12 @@ describe('Levels', () => {
   describe('findAll', () => {
     it('should return an array of levels taking default quantity and not skipping', async () => {
       const expected = {
-        levels: levelsWithUsersCount,
+        levels: levelsWithDevelopersCount,
         count: 2,
       };
 
       createQueryBuilder.getManyAndCount.mockImplementation(() => [
-        levelsWithUsersCount,
+        levelsWithDevelopersCount,
         2,
       ]);
 
@@ -95,9 +98,9 @@ describe('Levels', () => {
       );
 
       expect(createQueryBuilder.loadRelationCountAndMap).toBeCalledWith(
-        'levels.users_count',
-        'levels.users',
-        'user',
+        'levels.developers_count',
+        'levels.developers',
+        'developer',
       );
       expect(createQueryBuilder.take).toBeCalledWith(10);
       expect(createQueryBuilder.skip).toBeCalledWith(0);
@@ -109,7 +112,7 @@ describe('Levels', () => {
 
     it('should return an array of levels searching by "Júnior"', async () => {
       const expected = {
-        levels: levelsWithUsersCount,
+        levels: levelsWithDevelopersCount,
         count: 2,
       };
 
@@ -120,7 +123,7 @@ describe('Levels', () => {
       const findOperator = new FindOperator('like', '%Júnior%');
 
       createQueryBuilder.getManyAndCount.mockImplementation(() => [
-        levelsWithUsersCount,
+        levelsWithDevelopersCount,
         2,
       ]);
 
@@ -129,9 +132,9 @@ describe('Levels', () => {
       );
 
       expect(createQueryBuilder.loadRelationCountAndMap).toBeCalledWith(
-        'levels.users_count',
-        'levels.users',
-        'user',
+        'levels.developers_count',
+        'levels.developers',
+        'developer',
       );
       expect(createQueryBuilder.take).toBeCalledWith(10);
       expect(createQueryBuilder.skip).toBeCalledWith(0);
@@ -144,7 +147,7 @@ describe('Levels', () => {
 
     it('should return an array of levels sorting by id asc, taking four levels and skipping two', async () => {
       const expected = {
-        levels: levelsWithUsersCount,
+        levels: levelsWithDevelopersCount,
         count: 2,
       };
 
@@ -155,7 +158,7 @@ describe('Levels', () => {
       };
 
       createQueryBuilder.getManyAndCount.mockImplementation(() => [
-        levelsWithUsersCount,
+        levelsWithDevelopersCount,
         2,
       ]);
 
@@ -164,9 +167,9 @@ describe('Levels', () => {
       );
 
       expect(createQueryBuilder.loadRelationCountAndMap).toBeCalledWith(
-        'levels.users_count',
-        'levels.users',
-        'user',
+        'levels.developers_count',
+        'levels.developers',
+        'developer',
       );
       expect(createQueryBuilder.take).toBeCalledWith(4);
       expect(createQueryBuilder.skip).toBeCalledWith(2);

@@ -12,12 +12,12 @@ import { Injectable } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { ObjectLiteral } from 'src/common/interfaces/generics.interface';
 import { queryStringsToObject } from '../common/helpers/query.helper';
-import { User } from './entities/user.entity';
+import { Developer } from './entities/developer.entity';
 
 @Injectable()
-export class UsersRepository extends BaseRepository<User> {
+export class DevelopersRepository extends BaseRepository<Developer> {
   constructor(@InjectDataSource() dataSource: DataSource) {
-    super(User, dataSource);
+    super(Developer, dataSource);
   }
 
   async findAll(query: FindAllQuery): Promise<ObjectLiteral> {
@@ -33,24 +33,24 @@ export class UsersRepository extends BaseRepository<User> {
       options.where = [{ name: like }, { gender: like }, { hobby: like }];
     }
 
-    const [users, count] = await super.findAndCount(options);
+    const [developers, count] = await super.findAndCount(options);
 
-    return { users, count };
+    return { developers, count };
   }
 
-  async findOne(options: FindOneOptions<User>) {
+  async findOne(options: FindOneOptions<Developer>) {
     return await super.findOne(options);
   }
 
-  async create(user: User) {
-    return await super.create(user);
+  async create(developer: Developer) {
+    return await super.create(developer);
   }
 
-  async update(criteria: FindOptionsWhere<User>, user: User) {
-    return await super.update(criteria, user);
+  async update(criteria: FindOptionsWhere<Developer>, developer: Developer) {
+    return await super.update(criteria, developer);
   }
 
-  async delete(criteria: FindOptionsWhere<User>): Promise<DeleteResult> {
+  async delete(criteria: FindOptionsWhere<Developer>): Promise<DeleteResult> {
     return await super.delete(criteria);
   }
 }

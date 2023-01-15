@@ -27,7 +27,11 @@ export class LevelsRepository extends BaseRepository<Level> {
 
     const queryBuilder = this.repository
       .createQueryBuilder('levels')
-      .loadRelationCountAndMap('levels.users_count', 'levels.users', 'user')
+      .loadRelationCountAndMap(
+        'levels.developers_count',
+        'levels.developers',
+        'developer',
+      )
       .take(take)
       .skip(skip);
 

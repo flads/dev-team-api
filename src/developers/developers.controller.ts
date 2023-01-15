@@ -10,18 +10,18 @@ import {
   Req,
 } from '@nestjs/common';
 import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { CreateUserDto } from './dtos/create.dto';
+import { CreateDeveloperDto } from './dtos/create.dto';
 import { Request } from 'express';
-import { UpdateUserDto } from './dtos/update.dto';
-import { User } from './entities/user.entity';
-import { UsersService } from './users.service';
+import { UpdateDeveloperDto } from './dtos/update.dto';
+import { Developer } from './entities/developer.entity';
+import { DevelopersService } from './developers.service';
 
-@ApiTags('Users')
-@Controller('users')
-export class UsersController {
-  constructor(private usersService: UsersService) {}
+@ApiTags('Developers')
+@Controller('developers')
+export class DevelopersController {
+  constructor(private developersService: DevelopersService) {}
 
-  @ApiOperation({ summary: 'Find Users' })
+  @ApiOperation({ summary: 'Find Developers' })
   @ApiQuery({
     name: 'sort',
     type: 'string',
@@ -35,41 +35,41 @@ export class UsersController {
   @HttpCode(200)
   @Get()
   async findAll(@Req() req: Request) {
-    return await this.usersService.findAll(req.query);
+    return await this.developersService.findAll(req.query);
   }
 
-  @ApiOperation({ summary: 'Find User' })
+  @ApiOperation({ summary: 'Find Developer' })
   @ApiResponse({ status: 200, description: 'Ok' })
   @HttpCode(200)
   @Get('/:id')
   async findOne(@Param('id') id: number) {
-    return await this.usersService.findOne({ where: { id } });
+    return await this.developersService.findOne({ where: { id } });
   }
 
-  @ApiOperation({ summary: 'Create User' })
+  @ApiOperation({ summary: 'Create Developer' })
   @ApiResponse({ status: 201, description: 'Created' })
   @ApiResponse({ status: 400, description: 'Bad Request' })
   @HttpCode(201)
   @Post()
-  async create(@Body() body: CreateUserDto) {
-    return await this.usersService.create(body as User);
+  async create(@Body() body: CreateDeveloperDto) {
+    return await this.developersService.create(body as Developer);
   }
 
-  @ApiOperation({ summary: 'Update User' })
+  @ApiOperation({ summary: 'Update Developer' })
   @ApiResponse({ status: 200, description: 'Updated' })
   @ApiResponse({ status: 400, description: 'Bad Request' })
   @HttpCode(200)
   @Put('/:id')
-  async update(@Param('id') id: number, @Body() body: UpdateUserDto) {
-    return await this.usersService.update(id, body as User);
+  async update(@Param('id') id: number, @Body() body: UpdateDeveloperDto) {
+    return await this.developersService.update(id, body as Developer);
   }
 
-  @ApiOperation({ summary: 'Delete User' })
+  @ApiOperation({ summary: 'Delete Developer' })
   @ApiResponse({ status: 204, description: 'Deleted' })
   @ApiResponse({ status: 400, description: 'Bad Request' })
   @HttpCode(204)
   @Delete('/:id')
   async delete(@Param('id') id: number) {
-    return await this.usersService.delete(id);
+    return await this.developersService.delete(id);
   }
 }
