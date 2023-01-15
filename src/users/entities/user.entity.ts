@@ -29,4 +29,9 @@ export class User extends BaseEntity {
   calculateAge() {
     this.age = moment().diff(this.birthdate, 'years');
   }
+
+  @AfterLoad()
+  parseBirthdate() {
+    this.birthdate = moment(this.birthdate).format('DD/MM/YYYY');
+  }
 }
