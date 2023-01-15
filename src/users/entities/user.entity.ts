@@ -32,6 +32,8 @@ export class User extends BaseEntity {
 
   @AfterLoad()
   parseBirthdate() {
-    this.birthdate = moment(this.birthdate).format('DD/MM/YYYY');
+    this.birthdate = this.birthdate
+      ? moment(this.birthdate).format('DD/MM/YYYY')
+      : null;
   }
 }
