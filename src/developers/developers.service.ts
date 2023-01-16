@@ -8,6 +8,7 @@ import { FindAllQuery } from '../common/interfaces/parameters.interface';
 import { FindManyOptions, UpdateResult } from 'typeorm';
 import { Developer } from './entities/developer.entity';
 import { DevelopersRepository } from './developers.repository';
+import * as moment from 'moment';
 
 @Injectable()
 export class DevelopersService {
@@ -31,6 +32,12 @@ export class DevelopersService {
 
   async create(developer: Developer) {
     try {
+      if (developer.birthdate) {
+        developer.birthdate = moment(developer.birthdate, 'DD/MM/YYYY').format(
+          'YYYY-MM-DD',
+        );
+      }
+
       return await this.developersRepository.create(developer as Developer);
     } catch (error) {
       throw new BadRequestException('Não foi possível criar o desenvolvedor!');
