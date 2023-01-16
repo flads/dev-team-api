@@ -19,6 +19,10 @@ export class BaseRepository<Entity extends ObjectLiteral> {
     this.repository = dataSource.getRepository(entity);
   }
 
+  async find(options: FindOneOptions<Entity>): Promise<Entity[]> {
+    return await this.repository.find(options);
+  }
+
   async findOne(options: FindOneOptions<Entity>): Promise<Entity> {
     return await this.repository.findOne(options);
   }

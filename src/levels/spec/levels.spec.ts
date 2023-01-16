@@ -13,6 +13,7 @@ import * as queryHelper from '../../common/helpers/query.helper';
 
 describe('Levels', () => {
   let level: Level;
+  let levelsList: Level[];
   let levelWithDevelopersCount: ObjectLiteral;
   let levelsWithDevelopersCount: ObjectLiteral;
   let updatedResult: UpdateResult;
@@ -33,6 +34,7 @@ describe('Levels', () => {
 
   const repository = {
     ...repositoryMock,
+    find: jest.fn(),
     findOne: jest.fn(),
     save: jest.fn(),
     update: jest.fn(),
@@ -53,6 +55,11 @@ describe('Levels', () => {
       created_at: now,
       updated_at: now,
     } as Level;
+
+    levelsList = [
+      { id: 1, name: 'Júnior' },
+      { id: 2, name: 'Pleno' },
+    ] as Level[];
 
     levelWithDevelopersCount = { ...level, developers_count: 2 };
     levelsWithDevelopersCount = [
@@ -177,6 +184,19 @@ describe('Levels', () => {
       expect(createQueryBuilder.getManyAndCount).toBeCalledWith();
 
       expect(createQueryBuilder.where).not.toBeCalled();
+    });
+  });
+
+  describe('findAllForSelect', () => {
+    it('should return levels for select', async () => {
+      repository.find.mockImplementation(() => levelsList);
+
+      expect(levelsController.findAllForSelect()).resolves.toEqual(levelsList);
+
+      expect(repository.find).toBeCalledWith({
+        select: ['id', 'name'],
+        order: { id: 'ASC' },
+      });
     });
   });
 

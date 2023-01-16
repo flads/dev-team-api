@@ -37,6 +37,14 @@ export class LevelsController {
     return await this.levelsService.findAll(req.query);
   }
 
+  @ApiOperation({ summary: 'List Levels for select' })
+  @ApiResponse({ status: 200, description: 'Ok' })
+  @HttpCode(200)
+  @Get('for-select')
+  async findAllForSelect() {
+    return await this.levelsService.findAllForSelect();
+  }
+
   @ApiOperation({ summary: 'Find Level' })
   @ApiResponse({ status: 200, description: 'Ok' })
   @HttpCode(200)

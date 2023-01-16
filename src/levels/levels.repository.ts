@@ -1,6 +1,7 @@
 import {
   DataSource,
   DeleteResult,
+  FindManyOptions,
   FindOneOptions,
   FindOptionsWhere,
   Like,
@@ -46,6 +47,10 @@ export class LevelsRepository extends BaseRepository<Level> {
     const [levels, count] = await queryBuilder.getManyAndCount();
 
     return { levels, count };
+  }
+
+  async findAllForSelect(options: FindManyOptions<Level>): Promise<Level[]> {
+    return await super.find(options);
   }
 
   async findOne(options: FindOneOptions<Level>): Promise<Level> {

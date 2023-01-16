@@ -17,6 +17,13 @@ export class LevelsService {
     return await this.levelsRepository.findAll(query);
   }
 
+  async findAllForSelect() {
+    return await this.levelsRepository.findAllForSelect({
+      select: ['id', 'name'],
+      order: { id: 'ASC' },
+    });
+  }
+
   async findOne(
     options: FindManyOptions<Level>,
   ): Promise<Level | NotFoundException> {
