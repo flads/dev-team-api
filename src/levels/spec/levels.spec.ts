@@ -33,7 +33,6 @@ describe('Levels', () => {
 
   const repository = {
     ...repositoryMock,
-    findAndCount: jest.fn(),
     findOne: jest.fn(),
     save: jest.fn(),
     update: jest.fn(),

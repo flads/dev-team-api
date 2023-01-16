@@ -21,13 +21,23 @@ describe('Developers', () => {
 
   const repositoryMock: Repository<Developer> = jest.requireMock('typeorm');
 
+  const createQueryBuilder = {
+    leftJoinAndSelect: jest.fn().mockReturnThis(),
+    select: jest.fn().mockReturnThis(),
+    take: jest.fn().mockReturnThis(),
+    skip: jest.fn().mockReturnThis(),
+    orderBy: jest.fn().mockReturnThis(),
+    orWhere: jest.fn().mockReturnThis(),
+    getManyAndCount: jest.fn(),
+  };
+
   const repository = {
     ...repositoryMock,
-    findAndCount: jest.fn(),
     findOne: jest.fn(),
     save: jest.fn(),
     update: jest.fn(),
     delete: jest.fn(),
+    createQueryBuilder: jest.fn(() => createQueryBuilder),
   };
 
   const now = moment().toDate();
@@ -46,6 +56,9 @@ describe('Developers', () => {
       hobby: 'Teaching',
       created_at: now,
       updated_at: now,
+      level: {
+        name: 'Júnior',
+      },
     } as Developer;
 
     janeDoe = {
@@ -57,6 +70,9 @@ describe('Developers', () => {
       hobby: 'Teaching',
       created_at: now,
       updated_at: now,
+      level: {
+        name: 'Júnior',
+      },
     } as Developer;
 
     developers = [johnDoe, janeDoe];
@@ -88,17 +104,27 @@ describe('Developers', () => {
         count: 2,
       };
 
-      repository.findAndCount.mockImplementation(() => [developers, 2]);
+      createQueryBuilder.getManyAndCount.mockImplementation(() => [
+        developers,
+        2,
+      ]);
 
       expect(
         developersController.findAll({ query: {} } as any),
       ).resolves.toEqual(expected);
 
       expect(queryHelper.queryStringsToObject).not.toBeCalled();
-      expect(repository.findAndCount).toBeCalledWith({
-        take: 10,
-        skip: 0,
-      });
+      expect(createQueryBuilder.take).toBeCalledWith(10);
+      expect(createQueryBuilder.skip).toBeCalledWith(0);
+      expect(createQueryBuilder.select).toBeCalledWith([
+        'developers.id',
+        'developers.name',
+        'developers.gender',
+        'developers.birthdate',
+        'developers.hobby',
+        'level.name',
+      ]);
+      expect(createQueryBuilder.getManyAndCount).toBeCalledWith();
     });
 
     it('should return an array of developers searching by "John"', async () => {
@@ -113,22 +139,40 @@ describe('Developers', () => {
 
       const findOperator = new FindOperator('like', '%John%');
 
-      repository.findAndCount.mockImplementation(() => [developers, 2]);
+      createQueryBuilder.getManyAndCount.mockImplementation(() => [
+        developers,
+        2,
+      ]);
 
       expect(developersController.findAll({ query } as any)).resolves.toEqual(
         expected,
       );
 
       expect(queryHelper.queryStringsToObject).not.toBeCalled();
-      expect(repository.findAndCount).toBeCalledWith({
-        take: 10,
-        skip: 0,
-        where: [
-          { name: findOperator },
-          { gender: findOperator },
-          { hobby: findOperator },
-        ],
+      expect(createQueryBuilder.take).toBeCalledWith(10);
+      expect(createQueryBuilder.skip).toBeCalledWith(0);
+      expect(createQueryBuilder.orWhere).toBeCalledTimes(4);
+      expect(createQueryBuilder.orWhere).toHaveBeenNthCalledWith(1, {
+        name: findOperator,
       });
+      expect(createQueryBuilder.orWhere).toHaveBeenNthCalledWith(2, {
+        gender: findOperator,
+      });
+      expect(createQueryBuilder.orWhere).toHaveBeenNthCalledWith(3, {
+        hobby: findOperator,
+      });
+      expect(createQueryBuilder.orWhere).toHaveBeenNthCalledWith(4, {
+        level: { name: findOperator },
+      });
+      expect(createQueryBuilder.select).toBeCalledWith([
+        'developers.id',
+        'developers.name',
+        'developers.gender',
+        'developers.birthdate',
+        'developers.hobby',
+        'level.name',
+      ]);
+      expect(createQueryBuilder.getManyAndCount).toBeCalled();
     });
 
     it('should return an array of developers sorting by id asc, taking four developers and skipping two', async () => {
@@ -138,23 +182,37 @@ describe('Developers', () => {
       };
 
       const query = {
-        sort: 'id asc',
+        sort: 'developers.id asc',
         take: 4,
         skip: 2,
       };
 
-      repository.findAndCount.mockImplementation(() => [developers, 2]);
+      createQueryBuilder.getManyAndCount.mockImplementation(() => [
+        developers,
+        2,
+      ]);
 
       expect(developersController.findAll({ query } as any)).resolves.toEqual(
         expected,
       );
 
-      expect(queryHelper.queryStringsToObject).toBeCalledWith('id asc');
-      expect(repository.findAndCount).toBeCalledWith({
-        order: { id: 'asc' },
-        take: 4,
-        skip: 2,
+      expect(queryHelper.queryStringsToObject).toBeCalledWith(
+        'developers.id asc',
+      );
+      expect(createQueryBuilder.take).toBeCalledWith(4);
+      expect(createQueryBuilder.skip).toBeCalledWith(2);
+      expect(createQueryBuilder.orderBy).toBeCalledWith({
+        'developers.id': 'asc',
       });
+      expect(createQueryBuilder.select).toBeCalledWith([
+        'developers.id',
+        'developers.name',
+        'developers.gender',
+        'developers.birthdate',
+        'developers.hobby',
+        'level.name',
+      ]);
+      expect(createQueryBuilder.getManyAndCount).toBeCalled();
     });
   });
 
