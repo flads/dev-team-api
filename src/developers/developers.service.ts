@@ -40,6 +40,8 @@ export class DevelopersService {
 
       return await this.developersRepository.create(developer as Developer);
     } catch (error) {
+      console.log(error);
+
       throw new BadRequestException('Não foi possível criar o desenvolvedor!');
     }
   }
@@ -60,6 +62,8 @@ export class DevelopersService {
 
       return updateResult;
     } catch (error) {
+      console.log(error);
+
       if (error.status === HttpStatus.NOT_FOUND) {
         throw error;
       }
@@ -80,6 +84,8 @@ export class DevelopersService {
         throw new Error();
       }
     } catch (error) {
+      console.log(error);
+
       throw new BadRequestException(
         'Não foi possível excluir o desenvolvedor!',
       );
