@@ -26,12 +26,14 @@ export class DevelopersController {
     name: 'sort',
     type: 'string',
     required: false,
-    description: 'Examples: "id desc", "name asc", "name asc, id asc"',
+    description:
+      'Examples: "developers.id desc", "developers.name asc, developers.id asc"',
   })
   @ApiQuery({ name: 'search', type: 'string', required: false })
   @ApiQuery({ name: 'take', type: 'number', required: false })
   @ApiQuery({ name: 'skip', type: 'number', required: false })
   @ApiResponse({ status: 200, description: 'Ok' })
+  @ApiResponse({ status: 400, description: 'Bad Request' })
   @HttpCode(200)
   @Get()
   async findAll(@Req() req: Request) {
@@ -40,6 +42,7 @@ export class DevelopersController {
 
   @ApiOperation({ summary: 'Find Developer' })
   @ApiResponse({ status: 200, description: 'Ok' })
+  @ApiResponse({ status: 404, description: 'Not Found' })
   @HttpCode(200)
   @Get('/:id')
   async findOne(@Param('id') id: number) {

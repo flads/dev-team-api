@@ -214,6 +214,34 @@ describe('Developers', () => {
       ]);
       expect(createQueryBuilder.getManyAndCount).toBeCalled();
     });
+
+    it('should throw a BadRequestException', async () => {
+      const query = { sort: 'id asc' };
+
+      createQueryBuilder.getManyAndCount.mockImplementation(() =>
+        Promise.reject(new BadRequestException('Database Error!')),
+      );
+
+      expect(developersController.findAll({ query } as any)).rejects.toEqual(
+        new BadRequestException('Não foi possível listar os desenvolvedores!'),
+      );
+
+      expect(queryHelper.queryStringsToObject).toBeCalledWith('id asc');
+      expect(createQueryBuilder.take).toBeCalledWith(10);
+      expect(createQueryBuilder.skip).toBeCalledWith(0);
+      expect(createQueryBuilder.orderBy).toBeCalledWith({
+        id: 'asc',
+      });
+      expect(createQueryBuilder.select).toBeCalledWith([
+        'developers.id',
+        'developers.name',
+        'developers.gender',
+        'developers.birthdate',
+        'developers.hobby',
+        'level.name',
+      ]);
+      expect(createQueryBuilder.getManyAndCount).toBeCalled();
+    });
   });
 
   describe('findOne', () => {

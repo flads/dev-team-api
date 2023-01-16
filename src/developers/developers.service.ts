@@ -15,19 +15,33 @@ export class DevelopersService {
   constructor(private developersRepository: DevelopersRepository) {}
 
   async findAll(query: FindAllQuery) {
-    return await this.developersRepository.findAll(query);
+    try {
+      return await this.developersRepository.findAll(query);
+    } catch (error) {
+      console.log(error);
+
+      throw new BadRequestException(
+        'Não foi possível listar os desenvolvedores!',
+      );
+    }
   }
 
   async findOne(
     options: FindManyOptions<Developer>,
   ): Promise<Developer | NotFoundException> {
-    const developer = await this.developersRepository.findOne(options);
+    try {
+      const developer = await this.developersRepository.findOne(options);
 
-    if (!developer) {
-      throw new NotFoundException('Desenvolvedor não encontrado!');
+      if (!developer) {
+        throw new NotFoundException('Desenvolvedor não encontrado!');
+      }
+
+      return developer;
+    } catch (error) {
+      console.log(error);
+
+      throw error;
     }
-
-    return developer;
   }
 
   async create(developer: Developer) {
