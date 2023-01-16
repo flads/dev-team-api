@@ -2,7 +2,6 @@ import {
   DataSource,
   DeleteResult,
   EntityTarget,
-  FindManyOptions,
   FindOneOptions,
   FindOptionsWhere,
   Repository,
@@ -18,15 +17,6 @@ export class BaseRepository<Entity extends ObjectLiteral> {
 
   constructor(entity: EntityTarget<Entity>, dataSource: DataSource) {
     this.repository = dataSource.getRepository(entity);
-  }
-
-  async findAndCount(
-    options: FindManyOptions<Entity>,
-  ): Promise<[Entity[], number]> {
-    options.take = options.take || 10;
-    options.skip = options.skip || 0;
-
-    return await this.repository.findAndCount(options);
   }
 
   async findOne(options: FindOneOptions<Entity>): Promise<Entity> {
