@@ -40,8 +40,6 @@ export class LevelsService {
     try {
       return await this.levelsRepository.create(level as Level);
     } catch (error) {
-      console.log(error);
-
       throw new BadRequestException('Não foi possível criar o Nível!');
     }
   }
@@ -59,8 +57,6 @@ export class LevelsService {
 
       return updateResult;
     } catch (error) {
-      console.log(error);
-
       if (error.status === HttpStatus.NOT_FOUND) {
         throw error;
       }
@@ -79,8 +75,6 @@ export class LevelsService {
         throw new Error();
       }
     } catch (error) {
-      console.log(error);
-
       throw new BadRequestException('Não foi possível excluir o Nível!');
     }
   }
