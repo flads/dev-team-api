@@ -1,14 +1,20 @@
-# NestJS Boilerplate
+# Dev Team API
 
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/flads/nestjs-boilerplate/pulls)
 
 A very simple starter template for NestJS projects using TypeORM, with Swagger API description and unit tests coverage.
 
-  - List developers.
-  - Show developer.
-  - Create developers.
-  - Update developers.
-  - Delete developers.
+  - List Developers.
+  - Show Developer.
+  - Create Developers.
+  - Update Developers.
+  - Delete Developers.
+
+  - List Levels.
+  - Show Level.
+  - Create Levels.
+  - Update Levels.
+  - Delete Levels.
 
 ### Tech
 
@@ -16,23 +22,24 @@ Technologies used in this project:
 
 * [NestJS](https://github.com/nestjs/nest) - A progressive Node.js framework.
 * [TypeScript](https://github.com/microsoft/TypeScript) - TypeScript is a superset of JavaScript that compiles to clean JavaScript output.
+* [Jest](https://github.com/facebook/jest) - Delightful JavaScript Testing.
 * [TypeORM](https://github.com/typeorm/typeorm) - ORM for TypeScript and JavaScript (ES7, ES6, ES5).
 * [Swagger](https://github.com/nestjs/swagger) - OpenAPI (Swagger) module for Nest framework (node.js).
 * [PostgreSQL](https://github.com/postgres/postgres) - PostgreSQL is a powerful, open source object-relational database system.
 
-And of course NestJS itself is open source with a [public repository](https://github.com/flads/nestjs-boilerplate) on GitHub.
+And of course Dev Team API itself is open source with a [public repository](https://github.com/flads/dev-team-api) on GitHub.
 
 ### Installation
 
 Clone the repository:
 ```sh
-git clone git@github.com:flads/nestjs-boilerplate.git
+git clone git@github.com:flads/dev-team-api.git
 ```
 
 Install the dependencies:
 
 ```sh
-cd nestjs-boilerplate && npm i
+cd dev-team-api && npm i
 ```
 
 Create your .env file:
