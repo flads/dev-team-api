@@ -9,7 +9,6 @@ A very simple starter template for NestJS projects using TypeORM, with Swagger A
   - Create Developers.
   - Update Developers.
   - Delete Developers.
-
   - List Levels.
   - Show Level.
   - Create Levels.
