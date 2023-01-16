@@ -20,7 +20,10 @@ export class DevelopersRepository extends BaseRepository<Developer> {
   }
 
   async findAll(query: FindAllQuery): Promise<ObjectLiteral> {
-    const { take, skip, sort, search } = query;
+    const { sort, search } = query;
+
+    const take = query.take || 10;
+    const skip = query.skip || 0;
 
     const queryBuilder = this.repository
       .createQueryBuilder('developers')
