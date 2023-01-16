@@ -1,7 +1,6 @@
 import {
   DataSource,
   DeleteResult,
-  FindManyOptions,
   FindOneOptions,
   FindOptionsWhere,
   Like,
@@ -21,21 +20,45 @@ export class DevelopersRepository extends BaseRepository<Developer> {
   }
 
   async findAll(query: FindAllQuery): Promise<ObjectLiteral> {
-    const options: FindManyOptions = { take: query.take, skip: query.skip };
+    const { take, skip, sort, search } = query;
 
-    if (query.sort) {
-      options.order = queryStringsToObject(query.sort);
+    const queryBuilder = this.repository
+      .createQueryBuilder('developers')
+      .leftJoinAndSelect('developers.level', 'level')
+      .select([
+        'developers.id',
+        'developers.name',
+        'developers.gender',
+        'developers.birthdate',
+        'developers.hobby',
+        'level.name',
+      ])
+      .take(take)
+      .skip(skip);
+
+    if (sort) {
+      queryBuilder.orderBy(queryStringsToObject(sort));
     }
 
-    if (query.search) {
-      const like = Like('%' + query.search + '%');
+    if (search) {
+      const like = Like('%' + search + '%');
 
-      options.where = [{ name: like }, { gender: like }, { hobby: like }];
+      queryBuilder
+        .orWhere({ name: like })
+        .orWhere({ gender: like })
+        .orWhere({ hobby: like })
+        .orWhere({ level: { name: like } });
     }
 
-    const [developers, count] = await super.findAndCount(options);
+    const [developers, count] = await queryBuilder.getManyAndCount();
 
-    return { developers, count };
+    return {
+      developers: developers.map((developer: ObjectLiteral) => {
+        developer.level = developer.level.name;
+        return developer;
+      }),
+      count,
+    };
   }
 
   async findOne(options: FindOneOptions<Developer>) {
